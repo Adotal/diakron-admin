@@ -10,7 +10,10 @@ class AuthRepository {
   final AuthService _authService;
 
   Future<Result> login(String email, String password) async {
-    final result = await _authService.sigInEmailPassword(email, password);
+    final result = await _authService.sigInEmailPassword(
+      email: email,
+      password: password,
+    );
 
     if (result is Error<AuthResponse>) {
       return Result.error(Exception('unknown_error'));
@@ -22,8 +25,22 @@ class AuthRepository {
     return Result.ok(null);
   }
 
-  Future<AuthResponse> signUp(String email, String password) async {
-    return await _authService.sigUpEmailPassword(email, password);
+  Future<Result<void>> signUp({
+    required String email,
+    required String password,
+  }) async {
+    final result = await _authService.sigUpEmailPassword(
+      email: email,
+      password: password,
+    );
+
+    if (result is Error<AuthResponse>) {
+      return Result.error(result.error);
+    }
+    // Sign up successful
+    return Result.ok(null);
+
+    // return await _authService.sigUpEmailPassword(email, password);
   }
 
   // In auth_repository.dart

@@ -6,9 +6,10 @@ class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   // Sign in (login)
-  Future<Result<AuthResponse>> sigInEmailPassword(
-    String email,
-    String password,
+  Future<Result<AuthResponse>> sigInEmailPassword({
+   required String email,
+   required String password,
+  }
   ) async {
     try {
       final result = _supabase.auth.signInWithPassword(
@@ -22,14 +23,24 @@ class AuthService {
   }
 
   // Sign up
-  Future<AuthResponse> sigUpEmailPassword(String email, String password) async {
-    return await _supabase.auth.signUp(email: email, password: password);
+  Future<Result<AuthResponse>> sigUpEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result = await _supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
+      return Result.ok(result);
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
   }
 
   // Sign out
-  Future<void> signOut() async {    
+  Future<void> signOut() async {
     await _supabase.auth.signOut();
-    
   }
 
   // Send email password recover

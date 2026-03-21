@@ -1,7 +1,7 @@
 import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
-import 'package:diakron_admin/ui/core/themes/colors.dart';
+import 'package:diakron_admin/ui/core/themes/app_strings.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
@@ -70,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
             const Icon(Icons.recycling, color: Colors.white, size: 30),
             const SizedBox(width: 10),
             const Text(
-              'DIAKRON',
+              AppStrings.diakron,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -206,9 +206,15 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _onSignUpResult() {
+    
     if (widget.viewModel.signup.completed) {
       widget.viewModel.signup.clearResult();
-      context.go(Routes.home);
+      
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Usuario registrado!')));
+      
+      context.go(Routes.login);
     }
 
     if (widget.viewModel.signup.error) {

@@ -28,6 +28,19 @@ class SignupViewmodel {
         confirmPassword == '') {
       return Result.error(Exception('pws_not_match'));
     }
-    return Result.ok(null);
+
+    // Try to login
+    final result = await _authRepository.signUp(
+      email: email,
+      password: password,
+    );
+
+    if (result is Error<void>) {
+      _logger.w('Sign up failed! $result');
+    }
+
+    _logger.i('Sign up success! $result');
+
+    return result;
   }
 }
