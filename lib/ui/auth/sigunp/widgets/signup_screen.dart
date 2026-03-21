@@ -1,34 +1,58 @@
+import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/routes.dart';
+import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/colors.dart';
+import 'package:diakron_admin/ui/core/themes/dimens.dart';
+import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  const SignupScreen({super.key, required this.viewModel});
+
+  final SignupViewmodel viewModel;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   // Controllers
   final TextEditingController _name = TextEditingController(
-    text: 'password',
-  );  
+    text: 'UserTestName',
+  );
   final TextEditingController _lastnames = TextEditingController(
-    text: 'password',
-  );  
+    text: 'UserTestPassword',
+  );
   final TextEditingController _email = TextEditingController(
     text: 'email@example.com',
   );
   final TextEditingController _phonenumer = TextEditingController(
-    text: 'password',
-  );  
-  final TextEditingController _password = TextEditingController(
-    text: 'password',
-  );  
+    text: '123456789',
+  );
+  final TextEditingController _password = TextEditingController();
 
+  final TextEditingController _confirmPassword = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.signup.addListener(_onSignUpResult);
+  }
+
+  @override
+  void didUpdateWidget(covariant SignupScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.viewModel.signup.removeListener(_onSignUpResult);
+    widget.viewModel.signup.addListener(_onSignUpResult);
+  }
+
+  @override
+  void dispose() {
+    widget.viewModel.signup.removeListener(_onSignUpResult);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +97,8 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  "Registrarse",
+                Text(
+                  AppLocalizations.of(context)!.createAccount,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
@@ -84,45 +108,61 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: 30),
 
-                InputText(controller: _name, hintText: "Nombre(s)"),
-                const SizedBox(height: 20),
+                InputText(
+                  controller: _name,
+                  hintText: AppLocalizations.of(context)!.names,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
 
-                InputText(controller: _lastnames, hintText: "Apellidos"),
-                const SizedBox(height: 20),
+                InputText(
+                  controller: _lastnames,
+                  hintText: AppLocalizations.of(context)!.lastNames,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
 
-                InputText(controller: _phonenumer, hintText: "Número telefónico"),
-                const SizedBox(height: 20),
+                InputText(
+                  controller: _phonenumer,
+                  hintText: AppLocalizations.of(context)!.phoneNumber,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
 
                 // Campo Email
-                InputText(controller: _email, hintText: "E-mail"),
-                const SizedBox(height: 20),
+                InputText(
+                  controller: _email,
+                  hintText: AppLocalizations.of(context)!.email,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
 
                 // Campo Contraseña
-                InputText(controller: _password, hintText: "Contraseña", obscureText: true),
+                InputText(
+                  controller: _password,
+                  hintText: AppLocalizations.of(context)!.password,
+                  obscureText: true,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
+                // Field confirm password
+                InputText(
+                  controller: _confirmPassword,
+                  hintText: AppLocalizations.of(context)!.confirmPassword,
+                  obscureText: true,
+                ),
 
                 const SizedBox(height: 35),
 
-                // BOTÓN INICIAR SESIÓN
-                ElevatedButton(
+                // Button for signing up
+                FormButton(
+                  text: AppLocalizations.of(context)!.signUp,
                   onPressed: () {
-                    // // NAVEGACIÓN A LA PANTALLA HOME
-                    context.go(Routes.home);
+                    widget.viewModel.signup.execute((
+                      _email.value.text,
+                      _password.value.text,
+                      _confirmPassword.value.text,
+                    ));
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF387C11),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: const Text(
-                    'Registrarse',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  listenable: widget.viewModel.signup,
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: Dimens.longPaddingVertical),
 
                 GestureDetector(
                   onTap: () {
@@ -155,12 +195,28 @@ class _SignupScreenState extends State<SignupScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: Dimens.paddingVertical),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _onSignUpResult() {
+    if (widget.viewModel.signup.completed) {
+      widget.viewModel.signup.clearResult();
+      context.go(Routes.home);
+    }
+
+    if (widget.viewModel.signup.error) {
+      final error = widget.viewModel.signup.result;
+      widget.viewModel.signup.clearResult();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$error')));
+    }
   }
 }

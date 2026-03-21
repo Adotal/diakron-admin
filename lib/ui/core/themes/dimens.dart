@@ -7,7 +7,10 @@ abstract final class Dimens {
   static const paddingHorizontal = 20.0;
 
   /// General vertical padding used to separate UI items
-  static const paddingVertical = 24.0;
+  static const paddingVertical = 20.0;
+  static const longPaddingVertical = 25.0;
+
+  static const commonFontSize = 18.0;
 
   /// Get dimensions of screen size
   static Size screenSize(BuildContext context) {

@@ -4,5 +4,5 @@ abstract final class Routes {
   static const login = '/login';
   static const forgotpassword = '/forgotpassword';
   static const newpassword = '/newpassword';
-  static const singup = '/singup';
+  static const signup = '/signup';
 }

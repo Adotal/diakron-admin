@@ -122,11 +122,41 @@ abstract class AppLocalizations {
   /// **'Contraseña'**
   String get password;
 
+  /// No description provided for @confirmPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar contraseña'**
+  String get confirmPassword;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Número telefónico'**
+  String get phoneNumber;
+
+  /// No description provided for @names.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre(s)'**
+  String get names;
+
+  /// No description provided for @lastNames.
+  ///
+  /// In es, this message translates to:
+  /// **'Apellidos'**
+  String get lastNames;
+
   /// No description provided for @signUp.
   ///
   /// In es, this message translates to:
   /// **'¡Regístrate!'**
   String get signUp;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get createAccount;
 
   /// No description provided for @login.
   ///

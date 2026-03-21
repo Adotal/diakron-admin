@@ -4,6 +4,7 @@ import 'package:diakron_admin/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:diakron_admin/ui/core/themes/app_strings.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
+import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -154,42 +155,19 @@ class _LoginScreenState extends State<LoginScreen>
 
           const SizedBox(height: 25),
 
-          ElevatedButton(
+          // Login button
+          FormButton(
+            text: AppLocalizations.of(context)!.login,
             onPressed: () {
               widget.viewModel.login.execute((_email.text, _password.text));
             },
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(150, 60),
-              backgroundColor: AppColors.greenDiakron1,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-            child: ListenableBuilder(
-              listenable: widget.viewModel.login,
-              builder: (context, _) {
-                return widget.viewModel.login.running
-                    ? const SizedBox(
-                        height: 25,
-                        width: 25,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        AppLocalizations.of(context)!.login,
-                        style: TextStyle(fontSize: 18),
-                      );
-              },
-            ),
+            listenable: widget.viewModel.login,
           ),
-
+          
           const SizedBox(height: 25),
 
           GestureDetector(
-            onTap: () => context.push(Routes.singup),
+            onTap: () => context.push(Routes.signup),
             child: Column(
               children: [
                 Text(

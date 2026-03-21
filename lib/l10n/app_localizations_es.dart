@@ -21,7 +21,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get password => 'Contraseña';
 
   @override
+  String get confirmPassword => 'Confirmar contraseña';
+
+  @override
+  String get phoneNumber => 'Número telefónico';
+
+  @override
+  String get names => 'Nombre(s)';
+
+  @override
+  String get lastNames => 'Apellidos';
+
+  @override
   String get signUp => '¡Regístrate!';
+
+  @override
+  String get createAccount => 'Crear cuenta';
 
   @override
   String get login => 'Iniciar sesión';
