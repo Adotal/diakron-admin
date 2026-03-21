@@ -158,11 +158,23 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get createAccount;
 
+  /// No description provided for @haveAnAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya tienes una cuenta?'**
+  String get haveAnAccount;
+
   /// No description provided for @login.
   ///
   /// In es, this message translates to:
   /// **'Iniciar sesión'**
   String get login;
+
+  /// No description provided for @loginExclamation.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Inicia sesión!'**
+  String get loginExclamation;
 
   /// No description provided for @tryAgain.
   ///

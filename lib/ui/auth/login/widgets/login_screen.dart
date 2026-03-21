@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen>
             const Text(
               AppStrings.diakron,
               style: TextStyle(
-                fontSize: 40,
+                fontSize: Dimens.fontTitle,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 letterSpacing: 2.0,
@@ -86,7 +86,10 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             Text(
               AppLocalizations.of(context)!.administrators,
-              style: const TextStyle(fontSize: 14, color: Colors.white70),
+              style: const TextStyle(
+                fontSize: Dimens.fontMedium,
+                color: Colors.white70,
+              ),
             ),
           ],
         ),
@@ -96,7 +99,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   Widget _buildLoginForm(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimens.formPaddingHorizontal,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -104,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen>
             AppLocalizations.of(context)!.login,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 28,
+              fontSize: Dimens.fontSubtitle,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -163,8 +168,8 @@ class _LoginScreenState extends State<LoginScreen>
             },
             listenable: widget.viewModel.login,
           ),
-          
-          const SizedBox(height: 25),
+
+          const SizedBox(height: Dimens.paddingVertical),
 
           GestureDetector(
             onTap: () => context.push(Routes.signup),
@@ -185,14 +190,13 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: Dimens.paddingVertical),
           Text(
             AppLocalizations.of(context)!.termsAndConditions,
-
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: Dimens.fontSmall, color: Colors.grey),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: Dimens.paddingVertical),
         ],
       ),
     );
@@ -251,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen>
                           const Text(
                             AppStrings.diakron,
                             style: TextStyle(
-                              fontSize: 40,
+                              fontSize: Dimens.fontTitle,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 2.0,
@@ -261,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen>
                             Text(
                               AppLocalizations.of(context)!.administrators,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: Dimens.fontMedium,
                                 color: Colors.white70,
                               ),
                             ),

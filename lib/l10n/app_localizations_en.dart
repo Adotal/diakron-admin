@@ -39,7 +39,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createAccount => 'Crear cuenta';
 
   @override
+  String get haveAnAccount => '¿Ya tienes una cuenta?';
+
+  @override
   String get login => 'Log in';
+
+  @override
+  String get loginExclamation => '¡Inicia sesión!';
 
   @override
   String get tryAgain => 'Try again';

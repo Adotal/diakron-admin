@@ -93,7 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           const SizedBox(height: 40),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: Dimens.formPaddingHorizontal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -169,18 +169,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     context.go(Routes.login);
                   },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,                    
                     children: [
-                      const Text(
-                        '¿Ya tienes una cuenta? ',
+                      Text(
+                        AppLocalizations.of(context)!.haveAnAccount,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black54),
+                        style: const TextStyle(color: Colors.black54),
                       ),
+                      SizedBox(width: 5,),
 
-                      const Text(
-                        '¡Inicia Sesión!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.loginExclamation,
+                        textAlign: TextAlign.center,                        
+                        style: const TextStyle(                          
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -189,9 +190,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 40),
-                const Text(
-                  "Términos y condiciones.",
+                const SizedBox(height: Dimens.paddingVertical),
+                Text(
+                  AppLocalizations.of(context)!.termsAndConditions,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),

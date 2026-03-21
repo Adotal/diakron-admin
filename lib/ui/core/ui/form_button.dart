@@ -38,7 +38,7 @@ class FormButton extends StatelessWidget {
               ),
             );
           }
-          return Text(text, style: TextStyle(fontSize: Dimens.commonFontSize));
+          return Text(text, style: TextStyle(fontSize: Dimens.fontMedium));
         },
       ),
     );
