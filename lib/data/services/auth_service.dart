@@ -6,18 +6,19 @@ class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   // Sign in (login)
-  Future<Result<AuthResponse>> sigInEmailPassword(String email, String password) async {
-
-    try{
-    final result = _supabase.auth.signInWithPassword(
-      email: email,
-      password: password,      
-    );
-    return Result.ok(await result);
+  Future<Result<AuthResponse>> sigInEmailPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      final result = _supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      return Result.ok(await result);
     } on Exception catch (error) {
       return Result.error(error);
     }
-    
   }
 
   // Sign up
@@ -26,8 +27,9 @@ class AuthService {
   }
 
   // Sign out
-  Future<void> signOut() async {
+  Future<void> signOut() async {    
     await _supabase.auth.signOut();
+    
   }
 
   // Send email password recover
@@ -35,7 +37,9 @@ class AuthService {
   Future<void> sendEmailforgetPassword(String email) async {
     await _supabase.auth.resetPasswordForEmail(
       email,
-      redirectTo: kIsWeb ? null : 'io.supabase.flutterquickstart://callback/reset-password/',
+      redirectTo: kIsWeb
+          ? null
+          : 'io.supabase.flutterquickstart://callback/reset-password/',
     );
   }
 
