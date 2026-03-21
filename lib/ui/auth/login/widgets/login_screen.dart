@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen>
     _borderRadiusAnimation = Tween<double>(begin: 60.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeInOutQuart, 
+        curve: Curves.easeInOutQuart,
       ),
     );
   }
@@ -108,9 +108,9 @@ class _LoginScreenState extends State<LoginScreen>
           const SizedBox(height: 30),
 
           InputText(
-                    controller: _email,
-                    hintText: AppLocalizations.of(context)!.email,
-                  ),
+            controller: _email,
+            hintText: AppLocalizations.of(context)!.email,
+          ),
           const SizedBox(height: 20),
 
           InputText(
@@ -125,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen>
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                
                 AppLocalizations.of(context)!.keepLogged,
                 style: const TextStyle(color: Colors.grey),
               ),
@@ -189,14 +188,14 @@ class _LoginScreenState extends State<LoginScreen>
           GestureDetector(
             onTap: () => context.push(Routes.singup),
             child: Column(
-              children: const [
+              children: [
                 Text(
-                  "¿Quieres formar parte de nosotros?",
-                  style: TextStyle(color: Colors.black54),
+                  AppLocalizations.of(context)!.wantToJoinUs,
+                  style: const TextStyle(color: Colors.black54),
                 ),
                 Text(
-                  "¡Regístrate!",
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.signUp,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -206,8 +205,9 @@ class _LoginScreenState extends State<LoginScreen>
           ),
 
           const SizedBox(height: 40),
-          const Text(
-            "Términos y condiciones.",
+          Text(
+            AppLocalizations.of(context)!.termsAndConditions,
+
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         children: [
           // Login
-          if(_showForm)
+          if (_showForm)
             SingleChildScrollView(
               child: Column(
                 children: [
@@ -268,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           const SizedBox(height: 10),
                           const Text(
-                            "DIAKRON",
+                            AppStrings.appName,
                             style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
@@ -276,11 +276,10 @@ class _LoginScreenState extends State<LoginScreen>
                               letterSpacing: 2.0,
                             ),
                           ),
-                          if (_animationController.value >
-                              0.0) // 0.8
-                            const Text(
-                              'ADMINISTRADORES',
-                              style: TextStyle(
+                          if (_animationController.value > 0.0) // 0.8
+                            Text(
+                              AppLocalizations.of(context)!.administrators,
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.white70,
                               ),
@@ -300,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen>
   void _onResult() async {
     if (widget.viewModel.login.completed) {
       widget.viewModel.login.clearResult();
-      setState((){
+      setState(() {
         _isAnimating = true;
         _showForm = true;
       });
