@@ -1,5 +1,7 @@
+import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/app_strings.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
@@ -63,12 +65,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         // LOGO: Image.asset('assets/logo.png')
-                        Icon(Icons.recycling, size: 80, color: Colors.white),
-                        SizedBox(height: 10),
-                        Text(
-                          "DIAKRON",
+                        const Icon(
+                          Icons.recycling,
+                          size: 80,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          AppStrings.diakron,
+
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
@@ -77,9 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Text(
-                          'ADMINISTRADORES',
-                          style: TextStyle(
-                            fontSize: 14,
+                          AppLocalizations.of(context)!.administrators,
+                          style: const TextStyle(
+                            fontSize: 16,
                             color: Colors.white70,
                             letterSpacing: 3.0,
                           ),
@@ -99,8 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    "Iniciar Sesión",
+                  Text(
+                    AppLocalizations.of(context)!.login,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28,
@@ -111,13 +118,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 30),
 
                   // Campo Email
-                  InputText(controller: _email, hintText: "E-mail"),
+                  InputText(
+                    controller: _email,
+                    hintText: AppLocalizations.of(context)!.email,
+                  ),
                   const SizedBox(height: 20),
 
                   // Campo Contraseña
                   InputText(
                     controller: _password,
-                    hintText: "Contraseña",
+                    hintText: AppLocalizations.of(context)!.password,
                     obscureText: true,
                   ),
                   const SizedBox(height: 10),
@@ -126,8 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Text(
-                        "Mantener sesión",
+                      Text(
+                        AppLocalizations.of(context)!.keepLogged,
                         style: TextStyle(color: Colors.grey),
                       ),
                       Checkbox(
@@ -143,8 +153,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       context.push(Routes.forgotpassword);
                     },
-                    child: const Text(
-                      "Olvidé mi contraseña",
+                    child: Text(
+                      AppLocalizations.of(context)!.forgotYourPassword,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         decoration: TextDecoration.underline,
@@ -186,8 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                "Iniciar Sesión",
+                            : Text(
+                                AppLocalizations.of(context)!.login,
                                 style: TextStyle(fontSize: 18),
                               );
                       },
@@ -199,17 +209,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       context.push(Routes.singup);
                     },
-                    child: const Column(
+                    child: Column(
                       children: [
                         Text(
-                          "¿Quieres formar parte de nosotros?",
+                          AppLocalizations.of(context)!.wantToJoinUs,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black54),
                         ),
                         Text(
-                          "¡Regístrate!",
+                          AppLocalizations.of(context)!.signUp,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
@@ -218,8 +228,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const Text(
-                    "Términos y condiciones.",
+                  Text(
+                    AppLocalizations.of(context)!.termsAndConditions,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
@@ -241,12 +251,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     if (widget.viewModel.login.error) {
       widget.viewModel.login.clearResult();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           duration: Duration(seconds: 5),
           persist: false,
           dismissDirection: DismissDirection.horizontal,
-          content: Text("Error while login: ${widget.viewModel.login.result}"),
+          content: Text('Error on login'),
           action: SnackBarAction(
             label: "Try again",
             onPressed: () => widget.viewModel.login.execute((

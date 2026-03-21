@@ -3,18 +3,38 @@ import 'package:diakron_admin/utils/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepository {
-  final AuthService _authService = AuthService();
+  // Dependency injection
+  AuthRepository({required AuthService authService})
+    : _authService = authService;
+
+  final AuthService _authService;
 
   Future<Result> login(String email, String password) async {
-    // You can add extra logic here, like mapping errors to custom messages
-    return _authService.sigInEmailPassword(email, password);
+    final result = await _authService.sigInEmailPassword(email, password);
+
+    if (result is Error<AuthResponse>) {
+      return Result.error(Exception('unknown_error'));
+    }
+
+    // Login successful
+
+    // if(deleteSession) _authService.signOut
+    return Result.ok(null);
   }
 
   Future<AuthResponse> signUp(String email, String password) async {
     return await _authService.sigUpEmailPassword(email, password);
   }
 
-  Future<void> logout() => _authService.signOut();
+  // In auth_repository.dart
+  Future<Result<void>> logout() async {
+    try {
+      await _authService.signOut();
+      return Result.ok(null);
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
 
   String? getCurrentUserEmail() => _authService.getEmail();
 }
