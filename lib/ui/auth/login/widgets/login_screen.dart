@@ -19,10 +19,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _email = TextEditingController();
-  // text: 'adotal1484@gmail.com',
-  final TextEditingController _password = TextEditingController();
-  // text: '123456789',
+  final TextEditingController _email = TextEditingController(
+    text: 'adotal1484@gmail.com',
+  );
+
+  final TextEditingController _password = TextEditingController(
+    text: '123456789',
+  );
 
   late AnimationController _animationController;
   late Animation<double> _borderRadiusAnimation;
@@ -268,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           const SizedBox(height: 10),
                           const Text(
-                            AppStrings.appName,
+                            AppStrings.diakron,
                             style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
@@ -328,21 +331,23 @@ class _LoginScreenState extends State<LoginScreen>
     if (widget.viewModel.login.error) {
       widget.viewModel.login.clearResult();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 5),
-          persist: false,
-          dismissDirection: DismissDirection.horizontal,
-          content: Text('Error on login'),
-          action: SnackBarAction(
-            label: "Try again",
-            onPressed: () => widget.viewModel.login.execute((
-              _email.value.text,
-              _password.value.text,
-            )),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 5),
+            persist: false,
+            dismissDirection: DismissDirection.horizontal,
+            content: Text('Error on login'),
+            action: SnackBarAction(
+              label: "Try again",
+              onPressed: () => widget.viewModel.login.execute((
+                _email.value.text,
+                _password.value.text,
+              )),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 }
