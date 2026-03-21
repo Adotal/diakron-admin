@@ -15,16 +15,31 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _email = TextEditingController();
   // text: 'adotal1484@gmail.com',
   final TextEditingController _password = TextEditingController();
   // text: '123456789',
 
+  late AnimationController _animationController;
+  late Animation<double> _borderRadiusAnimation;
+  bool _isAnimating = false;
+  bool _showForm = true;
+
   @override
   void initState() {
     super.initState();
     widget.viewModel.login.addListener(_onResult);
+
+    // Configure animation
+    _animationController = AnimationController(vsync: this, value: 0.35);
+    _borderRadiusAnimation = Tween<double>(begin: 60.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOutQuart, 
+      ),
+    );
   }
 
   @override
@@ -36,196 +51,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _animationController.dispose();
     widget.viewModel.login.removeListener(_onResult);
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+  Widget _buildStaticHeader(BuildContext context) {
+    return Container(
+      height: Dimens.screenSize(context).height * 0.35,
+      decoration: const BoxDecoration(
+        color: AppColors.greenDiakron1,
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(60)),
+      ),
+      child: Center(
         child: Column(
-          children: [
-            // Header
-            Stack(
-              children: [
-                Container(
-                  height:
-                      Dimens.screenSize(context).height *
-                      0.35, // 35% de la altura
-                  decoration: const BoxDecoration(
-                    color: AppColors.greenDiakron1,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(60), // Curva
-                    ),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        // LOGO: Image.asset('assets/logo.png')
-                        Icon(Icons.recycling, size: 80, color: Colors.white),
-                        SizedBox(height: 10),
-                        Text(
-                          "DIAKRON",
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-                        Text(
-                          'ADMINISTRADORES',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                            letterSpacing: 3.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 40),
-
-            // Formulairo
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    "Iniciar Sesión",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Campo Email
-                  InputText(controller: _email, hintText: "E-mail"),
-                  const SizedBox(height: 20),
-
-                  // Campo Contraseña
-                  InputText(
-                    controller: _password,
-                    hintText: "Contraseña",
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Checkbox "Mantener sesión"
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text(
-                        "Mantener sesión",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Checkbox(
-                        value: false,
-                        onChanged: (v) {},
-                        activeColor: const Color(0xFF387C11),
-                      ),
-                    ],
-                  ),
-
-                  // Olvidé mi contraseña
-                  GestureDetector(
-                    onTap: () {
-                      context.push(Routes.forgotpassword);
-                    },
-                    child: const Text(
-                      "Olvidé mi contraseña",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  // BOTÓN INICIAR SESIÓN
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.viewModel.login.execute((
-                        _email.value.text,
-                        _password.value.text,
-                      ));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(150, 60),
-
-                      backgroundColor: AppColors.greenDiakron1,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    child: ListenableBuilder(
-                      listenable: widget.viewModel.login,
-                      builder: (context, _) {
-                        return widget.viewModel.login.running
-                            ? SizedBox(
-                                height: 25,
-                                width: 25,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text(
-                                "Iniciar Sesión",
-                                style: TextStyle(fontSize: 18),
-                              );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 25),
-
-                  GestureDetector(
-                    onTap: () {
-                      context.push(Routes.singup);
-                    },
-                    child: const Column(
-                      children: [
-                        Text(
-                          "¿Quieres formar parte de nosotros?",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                        Text(
-                          "¡Regístrate!",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  const Text(
-                    "Términos y condiciones.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.recycling, size: 80, color: Colors.white),
+            SizedBox(height: 10),
+            Text(
+              "DIAKRON",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 2.0,
               ),
+            ),
+            Text(
+              'ADMINISTRADORES',
+              style: TextStyle(fontSize: 14, color: Colors.white70),
             ),
           ],
         ),
@@ -233,11 +88,237 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onResult() {
+  Widget _buildLoginForm(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            "Iniciar Sesión",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 30),
+
+          InputText(controller: _email, hintText: "E-mail"),
+          const SizedBox(height: 20),
+
+          InputText(
+            controller: _password,
+            hintText: "Contraseña",
+            obscureText: true,
+          ),
+
+          const SizedBox(height: 10),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Text(
+                "Mantener sesión",
+                style: TextStyle(color: Colors.grey),
+              ),
+              Checkbox(
+                value: false,
+                onChanged: (v) {},
+                activeColor: const Color(0xFF387C11),
+              ),
+            ],
+          ),
+
+          GestureDetector(
+            onTap: () => context.push(Routes.forgotpassword),
+            child: const Text(
+              "Olvidé mi contraseña",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          ElevatedButton(
+            onPressed: () {
+              widget.viewModel.login.execute((_email.text, _password.text));
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(150, 60),
+              backgroundColor: AppColors.greenDiakron1,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            child: ListenableBuilder(
+              listenable: widget.viewModel.login,
+              builder: (context, _) {
+                return widget.viewModel.login.running
+                    ? const SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        "Iniciar Sesión",
+                        style: TextStyle(fontSize: 18),
+                      );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          GestureDetector(
+            onTap: () => context.push(Routes.singup),
+            child: Column(
+              children: const [
+                Text(
+                  "¿Quieres formar parte de nosotros?",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                Text(
+                  "¡Regístrate!",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 40),
+          const Text(
+            "Términos y condiciones.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          // Login
+          if(_showForm)
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildStaticHeader(context), // Header static
+                  const SizedBox(height: 40),
+                  _buildLoginForm(context), // form
+                ],
+              ),
+            ),
+          // Splash
+          if (_isAnimating)
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Container(
+                  width: double.infinity,
+                  // The height increases from 35% to 100% of the screen
+                  height: size.height * _animationController.value,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: AppColors.greenDiakron1,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(_borderRadiusAnimation.value),
+                    ),
+                  ),
+                  child: OverflowBox(
+                    maxHeight: size.height,
+                    alignment: Alignment.center,
+                    child: Opacity(
+                      opacity: 1.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Logo with centered text
+                          const Icon(
+                            Icons.recycling,
+                            size: 80,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "DIAKRON",
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          if (_animationController.value >
+                              0.0) // 0.8
+                            const Text(
+                              'ADMINISTRADORES',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _onResult() async {
     if (widget.viewModel.login.completed) {
       widget.viewModel.login.clearResult();
+      setState((){
+        _isAnimating = true;
+        _showForm = true;
+      });
+
+      await _animationController.animateTo(
+        1.0,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeInOutQuart,
+      );
+
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      setState(() {
+        _showForm = false;
+      });
+
+      await _animationController.animateBack(
+        0.0,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeInOutQuart,
+      );
+
       // Ve a home
-      context.go(Routes.home);
+      if (mounted) context.go(Routes.home);
     }
     if (widget.viewModel.login.error) {
       widget.viewModel.login.clearResult();
