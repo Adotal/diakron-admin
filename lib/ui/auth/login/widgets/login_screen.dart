@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen>
           children: [
             const Icon(Icons.recycling, size: 80, color: Colors.white),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               AppStrings.diakron,
               style: TextStyle(
                 fontSize: Dimens.fontTitle,

@@ -4,18 +4,24 @@ import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/router.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
+
+
+  // To load the .env file contents into dotenv.
+  await dotenv.load(fileName: ".env");
+
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize supabase
   await Supabase.initialize(
-    url: 'https://ogvhpfeknqytcuarqudu.supabase.co',
-    anonKey: 'sb_publishable_7u8z8XGsCZqW4yMS4nYjVw_0JLpy-tM',
+    url: dotenv.get('SUPABASE_URL'),
+    anonKey: dotenv.get('SUPABASE_ANON_KEY'),
   );
 
   runApp(
