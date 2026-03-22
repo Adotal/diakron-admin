@@ -44,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void didUpdateWidget(covariant SignupScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    widget.viewModel.signup.removeListener(_onSignUpResult);
+    oldWidget.viewModel.signup.removeListener(_onSignUpResult);
     widget.viewModel.signup.addListener(_onSignUpResult);
   }
 

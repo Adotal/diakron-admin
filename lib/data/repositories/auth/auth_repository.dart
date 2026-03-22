@@ -1,27 +1,49 @@
 import 'package:diakron_admin/data/services/auth_service.dart';
 import 'package:diakron_admin/utils/result.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthRepository {
+class AuthRepository extends ChangeNotifier {
   // Dependency injection
   AuthRepository({required AuthService authService})
-    : _authService = authService;
+    : _authService = authService {
+    // Listen to Supabase auth changes internally
+    _authService.onAuthStateChange.listen((data) {
+      final event = data.event;
+
+      if (event == AuthChangeEvent.passwordRecovery) {
+        _isRecoveringPassword = true;
+      } else if (event == AuthChangeEvent.signedIn) {
+        // ONLY set recovering to false if we aren't already in a recovery flow
+        // or if the session is standard.
+        if (!_isRecoveringPassword) {
+          _isRecoveringPassword = false;
+        }
+      } else if (event == AuthChangeEvent.signedOut) {
+        _isRecoveringPassword = false;
+      }
+
+      notifyListeners();
+    });
+  }
 
   final AuthService _authService;
 
-  Future<Result> login(String email, String password) async {
-    final result = await _authService.sigInEmailPassword(
+  bool get isAuthenticated => (_authService.currentSession != null);
+  bool _isRecoveringPassword = false;
+  bool get isRecoveringPassword => _isRecoveringPassword;
+
+  Future<Result<void>> login(String email, String password) async {
+    final result = await _authService.signInEmailPassword(
       email: email,
       password: password,
     );
 
-    if (result is Error<AuthResponse>) {
-      return Result.error(Exception('unknown_error'));
+    if (result is Error) {
+      return result;
     }
 
     // Login successful
-
-    // if(deleteSession) _authService.signOut
     return Result.ok(null);
   }
 
@@ -43,6 +65,16 @@ class AuthRepository {
     // return await _authService.sigUpEmailPassword(email, password);
   }
 
+  Future<Result<void>> updatePassword({required String password}) async {
+    final result = await _authService.updatePassword(password: password);
+    _isRecoveringPassword = false;
+    if (result is Error<UserResponse>) {
+      return Result.error(result.error);
+    }
+
+    return Result.ok(null);
+  }
+
   // In auth_repository.dart
   Future<Result<void>> logout() async {
     try {
@@ -51,6 +83,14 @@ class AuthRepository {
     } on Exception catch (error) {
       return Result.error(error);
     }
+  }
+
+  Future<Result<void>> sendEmailforgetPassword({required String email}) async {
+    final result = await _authService.sendEmailforgetPassword(email: email);
+    if (result is Error) {
+      return Result.error(result.error);
+    }
+    return Result.ok(null);
   }
 
   String? getCurrentUserEmail() => _authService.getEmail();

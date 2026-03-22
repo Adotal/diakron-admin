@@ -1,10 +1,16 @@
-import 'package:diakron_admin/ui/core/themes/colors.dart';
+import 'package:diakron_admin/l10n/app_localizations.dart';
+import 'package:diakron_admin/routing/routes.dart';
+import 'package:diakron_admin/ui/auth/forgot_password/view_models/forgot_password_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/dimens.dart';
+import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key});
+  const ForgotPasswordScreen({super.key, required this.viewModel});
+
+  final ForgotPasswordViewmodel viewModel;  
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -13,6 +19,25 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   
   final TextEditingController _email = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.sendRecoverEmail.addListener(_sendRecoverEmail);    
+  }
+
+  @override
+  void didUpdateWidget(covariant ForgotPasswordScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.viewModel.sendRecoverEmail.removeListener(_sendRecoverEmail);
+    widget.viewModel.sendRecoverEmail.addListener(_sendRecoverEmail);
+  }
+
+  @override
+  void dispose() {
+    widget.viewModel.sendRecoverEmail.removeListener(_sendRecoverEmail);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,27 +117,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       hintText: "Correo electrónico",
                     ),
                     const SizedBox(height: 20),
+
                     // BOTÓN ENVIAR CORREO
-                    ElevatedButton(
+                    FormButton(
+                      text: AppLocalizations.of(context)!.sendLink,
                       onPressed: () {
-                        // _handleLogin();
-                        // widget.viewModel.login(
-                        //   _email.value.text,
-                        //   _password.value.text);
+                        widget.viewModel.sendRecoverEmail.execute(
+                          _email.value.text,
+                        );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.greenDiakron1,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: const Text(
-                        "Enviar enlace",
-                        style: TextStyle(fontSize: 18),
-                      ),
+                      listenable: widget.viewModel.sendRecoverEmail,
                     ),
+
+                    const SizedBox(height: Dimens.paddingVertical),
                   ],
                 ),
               ),
@@ -121,5 +138,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ],
       ),
     );
+  }
+
+  void _sendRecoverEmail() {
+
+    if (widget.viewModel.sendRecoverEmail.completed) {
+      widget.viewModel.sendRecoverEmail.clearResult();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Revisa tu correo!')));
+
+      context.go(Routes.login);
+    }
+
+    if (widget.viewModel.sendRecoverEmail.error) {
+      final error = widget.viewModel.sendRecoverEmail.result;
+      widget.viewModel.sendRecoverEmail.clearResult();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $error')));
+    }
   }
 }

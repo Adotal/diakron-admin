@@ -61,4 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotYourPassword => 'Forgot your password?';
+
+  @override
+  String get sendLink => 'Enviar enlace';
 }

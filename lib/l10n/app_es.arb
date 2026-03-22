@@ -35,5 +35,7 @@
   "wantToJoinUs": "¿Quieres formar parte de nosotros?",
   "@wantToJoinUs": {},
   "forgotYourPassword": "¿Olvidaste tu contraseña?",
-  "@forgotYourPassword": {}
+  "@forgotYourPassword": {},
+  "sendLink": "Enviar enlace",
+  "@sendLink": {}
 }

@@ -205,6 +205,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Olvidaste tu contraseña?'**
   String get forgotYourPassword;
+
+  /// No description provided for @sendLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar enlace'**
+  String get sendLink;
 }
 
 class _AppLocalizationsDelegate

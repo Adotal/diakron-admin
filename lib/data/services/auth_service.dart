@@ -1,24 +1,32 @@
 import 'package:diakron_admin/utils/result.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  // Provide a stream of auth changes
+  Stream<AuthState> get onAuthStateChange => _supabase.auth.onAuthStateChange;
+
+  Session? get currentSession => _supabase.auth.currentSession;
+  
+
   // Sign in (login)
-  Future<Result<AuthResponse>> sigInEmailPassword({
-   required String email,
-   required String password,
-  }
-  ) async {
+  Future<Result<AuthResponse>> signInEmailPassword({
+    required String email,
+    required String password,
+  }) async {
     try {
-      final result = _supabase.auth.signInWithPassword(
+      final result = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
-      return Result.ok(await result);
-    } on Exception catch (error) {
-      return Result.error(error);
+      return Result.ok(result);
+
+    } on AuthException catch (error) {
+      // Supabase error      
+      return Result.error(Exception(error.message));
+    } catch (error) {
+      return Result.error(Exception("Unknow error"));
     }
   }
 
@@ -33,8 +41,8 @@ class AuthService {
         password: password,
       );
       return Result.ok(result);
-    } on Exception catch (error) {
-      return Result.error(error);
+    } catch (error) {
+      return Result.error(Exception(error));
     }
   }
 
@@ -45,18 +53,26 @@ class AuthService {
 
   // Send email password recover
 
-  Future<void> sendEmailforgetPassword(String email) async {
-    await _supabase.auth.resetPasswordForEmail(
-      email,
-      redirectTo: kIsWeb
-          ? null
-          : 'io.supabase.flutterquickstart://callback/reset-password/',
-    );
+  Future<Result<void>> sendEmailforgetPassword({required String email}) async {
+    try {
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: 'io.supabase.diakron.admin://reset-password',
+      );
+      return Result.ok(null);
+    } catch (error) {
+      return Result.error(Exception(error));
+    }
   }
 
   // Update user password
-  Future<UserResponse> updateUserPassword(String password) async {
-    return await _supabase.auth.updateUser(UserAttributes(password: password));
+  Future<Result<UserResponse>> updatePassword({required String password}) async {
+    try{
+      final result = await _supabase.auth.updateUser(UserAttributes(password: password));
+      return Result.ok(result);
+    }catch (error){
+      return Result.error(Exception(error));
+    }
   }
 
   // get Email

@@ -310,7 +310,9 @@ class _LoginScreenState extends State<LoginScreen>
       // Ve a home
       if (mounted) context.go(Routes.home);
     }
+
     if (widget.viewModel.login.error) {
+      final error = widget.viewModel.login.result;
       widget.viewModel.login.clearResult();
 
       if (mounted) {
@@ -319,7 +321,7 @@ class _LoginScreenState extends State<LoginScreen>
             duration: Duration(seconds: 5),
             persist: false,
             dismissDirection: DismissDirection.horizontal,
-            content: Text('Error on login'),
+            content: Text('Error: $error'),
             action: SnackBarAction(
               label: "Try again",
               onPressed: () => widget.viewModel.login.execute((

@@ -13,7 +13,7 @@ abstract final class Dimens {
 
   static const fontSmall = 12.0;
   static const fontMedium = 18.0;
-  static const fontBig = 18.0;
+  static const fontBig = 30.0;
   static const fontTitle = 40.0;
   static const fontSubtitle = 30.0;
 
