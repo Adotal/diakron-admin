@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get names => 'Nombre(s)';
 
   @override
-  String get lastNames => 'Apellidos';
+  String get surnames => 'Apellidos';
 
   @override
   String get signUp => 'Sign Up!';

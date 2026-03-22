@@ -8,7 +8,6 @@ class AuthService {
   Stream<AuthState> get onAuthStateChange => _supabase.auth.onAuthStateChange;
 
   Session? get currentSession => _supabase.auth.currentSession;
-  
 
   // Sign in (login)
   Future<Result<AuthResponse>> signInEmailPassword({
@@ -21,9 +20,8 @@ class AuthService {
         password: password,
       );
       return Result.ok(result);
-
     } on AuthException catch (error) {
-      // Supabase error      
+      // Supabase error
       return Result.error(Exception(error.message));
     } catch (error) {
       return Result.error(Exception("Unknow error"));
@@ -34,12 +32,25 @@ class AuthService {
   Future<Result<AuthResponse>> sigUpEmailPassword({
     required String email,
     required String password,
+    required String username,
+    required String surnames,
+    required String phoneNumber,    
   }) async {
     try {
       final result = await _supabase.auth.signUp(
         email: email,
         password: password,
+        data: {
+          'user_name': username,
+          'surnames': surnames,
+          'phone_number': phoneNumber,
+          // Empieza desactivado porque es solicitud de registro
+          'is_active': false,
+          // Siempre es admin
+          'user_type': 'admin',
+        },
       );
+
       return Result.ok(result);
     } catch (error) {
       return Result.error(Exception(error));
@@ -57,7 +68,7 @@ class AuthService {
     try {
       await _supabase.auth.resetPasswordForEmail(
         email,
-        redirectTo: 'io.supabase.diakron.admin://reset-password',
+        redirectTo: 'io.supabase.diakron.admin://reset-password/',
       );
       return Result.ok(null);
     } catch (error) {
@@ -66,11 +77,15 @@ class AuthService {
   }
 
   // Update user password
-  Future<Result<UserResponse>> updatePassword({required String password}) async {
-    try{
-      final result = await _supabase.auth.updateUser(UserAttributes(password: password));
+  Future<Result<UserResponse>> updatePassword({
+    required String password,
+  }) async {
+    try {
+      final result = await _supabase.auth.updateUser(
+        UserAttributes(password: password),
+      );
       return Result.ok(result);
-    }catch (error){
+    } catch (error) {
       return Result.error(Exception(error));
     }
   }

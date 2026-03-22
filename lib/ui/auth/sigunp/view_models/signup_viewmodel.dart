@@ -4,13 +4,21 @@ import 'package:diakron_admin/utils/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/web.dart';
 
-class SignupViewmodel extends ChangeNotifier{
+class SignupViewmodel extends ChangeNotifier {
   SignupViewmodel({required AuthRepository authRepository})
     : _authRepository = authRepository {
     signup =
-        Command1<void, (String email, String password, String confirmPassword)>(
-          _signUp,
-        );
+        Command1<
+          void,
+          (
+            String userName,
+            String surnames,
+            String email,
+            String phoneNumber,
+            String password,
+            String confirmPassword,
+          )
+        >(_signUp);
   }
 
   final AuthRepository _authRepository;
@@ -18,8 +26,11 @@ class SignupViewmodel extends ChangeNotifier{
 
   late Command1 signup;
 
-  Future<Result<void>> _signUp((String, String, String) data) async {
-    final (email, password, confirmPassword) = data;
+  Future<Result<void>> _signUp(
+    (String, String, String, String, String, String) data,
+  ) async {
+    final (userName, surnames, email, phoneNumber, password, confirmPassword) =
+        data;
 
     _logger.i("Email:$email\nPsw:$password\nconfPsw:$confirmPassword");
 
@@ -31,7 +42,10 @@ class SignupViewmodel extends ChangeNotifier{
 
     // Try to sign up
     final result = await _authRepository.signUp(
+      username: userName,
+      surnames: surnames,      
       email: email,
+      phoneNumber: phoneNumber,
       password: password,
     );
 

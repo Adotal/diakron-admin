@@ -48,11 +48,17 @@ class AuthRepository extends ChangeNotifier {
   }
 
   Future<Result<void>> signUp({
+    required String username,
+    required String surnames,
     required String email,
-    required String password,
+    required String phoneNumber,
+    required String password, 
   }) async {
     final result = await _authService.sigUpEmailPassword(
+      username: username,
+      surnames: surnames,
       email: email,
+      phoneNumber: phoneNumber,
       password: password,
     );
 

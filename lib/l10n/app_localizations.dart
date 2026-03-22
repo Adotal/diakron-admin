@@ -140,11 +140,11 @@ abstract class AppLocalizations {
   /// **'Nombre(s)'**
   String get names;
 
-  /// No description provided for @lastNames.
+  /// No description provided for @surnames.
   ///
   /// In es, this message translates to:
   /// **'Apellidos'**
-  String get lastNames;
+  String get surnames;
 
   /// No description provided for @signUp.
   ///

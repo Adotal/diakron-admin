@@ -22,18 +22,21 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _name = TextEditingController(
     text: 'UserTestName',
   );
-  final TextEditingController _lastnames = TextEditingController(
-    text: 'UserTestPassword',
+  final TextEditingController _surnames = TextEditingController(
+    text: 'UserTestSurname',
   );
   final TextEditingController _email = TextEditingController(
-    text: 'email@example.com',
+    text: 'adotal1484@gmail.com',
   );
-  final TextEditingController _phonenumer = TextEditingController(
+  final TextEditingController _phoneNumber = TextEditingController(
+    text: '1234567890',
+  );
+  final TextEditingController _password = TextEditingController(
     text: '123456789',
   );
-  final TextEditingController _password = TextEditingController();
-
-  final TextEditingController _confirmPassword = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController(
+    text: '123456789',
+  );
 
   @override
   void initState() {
@@ -93,7 +96,9 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           const SizedBox(height: 40),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimens.formPaddingHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Dimens.formPaddingHorizontal,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -115,14 +120,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: Dimens.paddingVertical),
 
                 InputText(
-                  controller: _lastnames,
-                  hintText: AppLocalizations.of(context)!.lastNames,
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-
-                InputText(
-                  controller: _phonenumer,
-                  hintText: AppLocalizations.of(context)!.phoneNumber,
+                  controller: _surnames,
+                  hintText: AppLocalizations.of(context)!.surnames,
                 ),
                 const SizedBox(height: Dimens.paddingVertical),
 
@@ -130,6 +129,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 InputText(
                   controller: _email,
                   hintText: AppLocalizations.of(context)!.email,
+                ),
+                const SizedBox(height: Dimens.paddingVertical),
+
+                InputText(
+                  controller: _phoneNumber,
+                  hintText: AppLocalizations.of(context)!.phoneNumber,
                 ),
                 const SizedBox(height: Dimens.paddingVertical),
 
@@ -154,7 +159,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   text: AppLocalizations.of(context)!.signUp,
                   onPressed: () {
                     widget.viewModel.signup.execute((
+                      _name.value.text,
+                      _surnames.value.text,                      
                       _email.value.text,
+                      _phoneNumber.value.text,
                       _password.value.text,
                       _confirmPassword.value.text,
                     ));
@@ -169,19 +177,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     context.go(Routes.login);
                   },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,                    
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         AppLocalizations.of(context)!.haveAnAccount,
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.black54),
                       ),
-                      SizedBox(width: 5,),
+                      SizedBox(width: 5),
 
                       Text(
                         AppLocalizations.of(context)!.loginExclamation,
-                        textAlign: TextAlign.center,                        
-                        style: const TextStyle(                          
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -206,14 +214,13 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _onSignUpResult() {
-    
     if (widget.viewModel.signup.completed) {
       widget.viewModel.signup.clearResult();
-      
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Usuario registrado!')));
-      
+
       context.go(Routes.login);
     }
 
