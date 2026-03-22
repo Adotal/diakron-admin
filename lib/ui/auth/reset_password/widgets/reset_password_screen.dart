@@ -43,8 +43,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return CustomScreen(
       child: Center(
-        child: ListView(          
-          shrinkWrap: true,        
+        child: ListView(
+          shrinkWrap: true,
           padding: const EdgeInsets.all(25.0),
           children: [
             const Text(
@@ -53,11 +53,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               style: TextStyle(fontSize: Dimens.fontBig),
             ),
             const SizedBox(height: Dimens.paddingVertical),
-            InputText(controller: _password, hintText: "Nueva contraseña"),
+            InputText(
+              controller: _password,
+              hintText: "Nueva contraseña",
+              obscureText: true,
+            ),
             const SizedBox(height: Dimens.paddingVertical),
             InputText(
               controller: _confirmPassword,
               hintText: "Confirmar contraseña",
+              obscureText: true,
             ),
             const SizedBox(height: Dimens.paddingVertical),
             FormButton(
@@ -78,13 +83,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void _onUpdatePassword() {
-    
     if (widget.viewModel.updatePassword.completed) {
       widget.viewModel.updatePassword.clearResult();
-      
+
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Nueva contraseña actualizada')));      
+      ).showSnackBar(SnackBar(content: Text('Nueva contraseña actualizada')));
       context.go(Routes.login);
     }
 
@@ -96,6 +100,5 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text('$error')));
     }
-  
   }
 }
