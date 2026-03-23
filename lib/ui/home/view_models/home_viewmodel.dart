@@ -1,7 +1,5 @@
 // home_viewmodel.dart
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
-import 'package:diakron_admin/utils/command.dart';
-import 'package:diakron_admin/utils/result.dart';
 import 'package:flutter/material.dart';
 
 class StatData {
@@ -21,14 +19,8 @@ class StatData {
 }
 
 class HomeViewModel extends ChangeNotifier {
-  HomeViewModel({required AuthRepository authRepository})
-    : _authRepository = authRepository {
-    // Command0 is used because logout doesn't require input parameters
-    logout = Command0<void>(_logout);
-  }
-
-  final AuthRepository _authRepository;
-  late Command0<void> logout;
+  // It will eventually need UserRepository NOT authRepository
+  HomeViewModel({required AuthRepository authRepository});
   // ui
   int _selectedCardIndex = 0;
   int get selectedCardIndex => _selectedCardIndex;
@@ -83,7 +75,4 @@ class HomeViewModel extends ChangeNotifier {
   String get currentChartTitle =>
       stats[_selectedCardIndex].title.replaceAll('\n', ' ');
 
-  Future<Result<void>> _logout() async {
-    return await _authRepository.logout();
-  }
 }
