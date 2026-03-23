@@ -21,20 +21,31 @@ class StatData {
 }
 
 class HomeViewModel extends ChangeNotifier {
-  HomeViewModel({required AuthRepository authRepository})
-    : _authRepository = authRepository {
-    // Command0 is used because logout doesn't require input parameters
-    logout = Command0<void>(_logout);
-  }
-
   final AuthRepository _authRepository;
   late Command0<void> logout;
+  // data
+  String _userName = "ERROR";
+  String get userName => _userName;
+
+
   // ui
   int _selectedCardIndex = 0;
   int get selectedCardIndex => _selectedCardIndex;
 
   int _selectedChartTab = 1; // 0: Mes, 1: Sem, 2: Hoy
   int get selectedChartTab => _selectedChartTab;
+
+  void refreshUserData() {
+    _userName = _authRepository.getUserName();
+    notifyListeners();
+  }
+  
+  HomeViewModel({required AuthRepository authRepository})
+    : _authRepository = authRepository{
+    // Command0 is used because logout doesn't require input parameters
+    logout = Command0<void>(_logout);
+    _userName = _authRepository.getUserName();
+  }
 
   //Ejemplos datos
   final List<StatData> stats = [

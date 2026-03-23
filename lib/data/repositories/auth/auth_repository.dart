@@ -52,7 +52,7 @@ class AuthRepository extends ChangeNotifier {
     required String surnames,
     required String email,
     required String phoneNumber,
-    required String password, 
+    required String password,
   }) async {
     final result = await _authService.sigUpEmailPassword(
       username: username,
@@ -97,6 +97,20 @@ class AuthRepository extends ChangeNotifier {
       return Result.error(result.error);
     }
     return Result.ok(null);
+  }
+
+  String getUserName() {
+    final user = _authService.currentSession?.user;
+    if (user == null) return "ERROR NULL";
+    final String? firstName = user.userMetadata?['user_name'];
+    final String? lastName = user.userMetadata?['surnames'];
+
+    if (firstName != null && lastName != null) {
+      return firstName;
+    } else if (firstName != null) {
+      return firstName;
+    }
+    return "ERROR";
   }
 
   String? getCurrentUserEmail() => _authService.getEmail();
