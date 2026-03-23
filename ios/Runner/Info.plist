@@ -46,6 +46,8 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true />
 
+
+		<!-- Add this array for Deep Links -->
 		<key>CFBundleURLTypes</key>
 		<array>
 			<dict>
@@ -57,5 +59,6 @@
 				</array>
 			</dict>
 		</array>
+
 	</dict>
 </plist>
