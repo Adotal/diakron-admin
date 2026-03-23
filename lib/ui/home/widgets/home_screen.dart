@@ -1,5 +1,8 @@
 import 'package:diakron_admin/routing/routes.dart';
+import 'package:diakron_admin/ui/core/ui/line_chart_section.dart';
+import 'package:diakron_admin/ui/core/ui/stat_card.dart';
 import 'package:diakron_admin/ui/home/view_models/home_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,13 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void didUpdateWidget(covariant HomeScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    oldWidget.viewModel.logout.removeListener(_onLogoutResult);
-    widget.viewModel.logout.addListener(_onLogoutResult);
-  }
-
-  @override
   void dispose() {
     widget.viewModel.logout.removeListener(_onLogoutResult);
     super.dispose();
@@ -35,52 +31,106 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onLogoutResult() {
     if (widget.viewModel.logout.completed) {
       widget.viewModel.logout.clearResult();
-      // Navigate back to the login screen
       context.go(Routes.login);
-    }
-    if (widget.viewModel.logout.error) {
-      widget.viewModel.logout.clearResult();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error logging out. Please try again.')),
-      );
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Diakron Dashboard'),
-        actions: [
-          // LOGOUT BUTTON
-          ListenableBuilder(
-            listenable: widget.viewModel.logout,
+    return SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+          child: ListenableBuilder(
+            listenable: widget.viewModel,
             builder: (context, _) {
-              if (widget.viewModel.logout.running) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.viewModel.stats.length,
+                      itemBuilder: (context, index) {
+                        final data = widget.viewModel.stats[index];
+                        final isSelected =
+                            widget.viewModel.selectedCardIndex == index;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: SizedBox(
+                            width: 180,
+                            child: StatCard(
+                              title: data.title,
+                              value: data.value,
+                              percentage: data.percentage,
+                              isDark: isSelected,
+                              progressColor: isSelected
+                                  ? data.color
+                                  : Colors.grey,
+                              onTap: () => widget.viewModel.selectCard(index),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                );
-              }
-              
-              return IconButton(
-                icon: const Icon(Icons.logout),
-                tooltip: 'Logout',
-                onPressed: () {
-                  widget.viewModel.logout.execute();
-                },
+                  const SizedBox(height: 35),
+                  LineChartSection(
+                    title:
+                        widget.viewModel.currentChartTitle, // Función dinámica
+                    selectedTab: widget.viewModel.selectedChartTab,
+                    onTabChanged: (index) =>
+                        widget.viewModel.selectChartTab(index),
+                  ),
+                ],
               );
             },
           ),
-        ],
-      ),
-      body: const Center(
-        child: Text('Welcome to the Admin Dashboard!'),
-      ),
+        ),
+    );
+  }
+
+  // Components
+
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Dashboard",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        Row(
+          children: [
+            ListenableBuilder(
+              listenable: widget.viewModel.logout,
+              builder: (context, _) {
+                return IconButton(
+                  icon: widget.viewModel.logout.running
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.logout_rounded, color: Colors.grey),
+                  onPressed: () => widget.viewModel.logout.execute(),
+                );
+              },
+            ),
+            const CircleAvatar(
+              radius: 22,
+              backgroundColor: AppColors.greenDiakron1,
+              child: Icon(Icons.person, color: Colors.white),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

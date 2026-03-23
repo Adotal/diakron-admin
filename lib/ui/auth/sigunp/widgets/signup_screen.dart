@@ -18,6 +18,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  bool _isPasswordObscured = true;
   // Controllers
   final TextEditingController _name = TextEditingController(
     text: 'UserTestName',
@@ -142,14 +143,40 @@ class _SignupScreenState extends State<SignupScreen> {
                 InputText(
                   controller: _password,
                   hintText: AppLocalizations.of(context)!.password,
-                  obscureText: true,
+                  obscureText: _isPasswordObscured,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordObscured
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordObscured = !_isPasswordObscured;
+                      });
+                    },
+                  ),
                 ),
                 const SizedBox(height: Dimens.paddingVertical),
                 // Field confirm password
                 InputText(
                   controller: _confirmPassword,
                   hintText: AppLocalizations.of(context)!.confirmPassword,
-                  obscureText: true,
+                  obscureText: _isPasswordObscured,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordObscured
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordObscured = !_isPasswordObscured;
+                      });
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 35),
@@ -160,7 +187,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   onPressed: () {
                     widget.viewModel.signup.execute((
                       _name.value.text,
-                      _surnames.value.text,                      
+                      _surnames.value.text,
                       _email.value.text,
                       _phoneNumber.value.text,
                       _password.value.text,

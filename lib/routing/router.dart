@@ -11,6 +11,7 @@ import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
 import 'package:diakron_admin/ui/auth/sigunp/widgets/signup_screen.dart';
 import 'package:diakron_admin/ui/home/view_models/home_viewmodel.dart';
 import 'package:diakron_admin/ui/home/widgets/home_screen.dart';
+import 'package:diakron_admin/ui/main/widgets/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,46 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
   redirect: _redirect,
 
   routes: [
+
+    ShellRoute(
+      builder: (context, state, child) {
+        return MainScreen(child: child);
+      },
+      routes: [
+
+        GoRoute(
+          path: Routes.home,
+          builder: (context, state) {
+            return HomeScreen(
+              viewModel: HomeViewModel(
+                authRepository: context.read<AuthRepository>(),
+              ),
+            );
+          },
+        ),
+
+        GoRoute(
+          path: Routes.map,
+          builder: (_, __) => const Scaffold(body: Center(child: Text("Mapa"))),
+        ),
+
+        GoRoute(
+          path: Routes.users,
+          builder: (_, __) => const Scaffold(body: Center(child: Text("Usuarios"))),
+        ),
+
+        GoRoute(
+          path: Routes.finance,
+          builder: (_, __) => const Scaffold(body: Center(child: Text("Finanzas"))),
+        ),
+
+        GoRoute(
+          path: Routes.settings,
+          builder: (_, __) => const Scaffold(body: Center(child: Text("Ajustes"))),
+        ),
+      ],
+    ),
+
     GoRoute(
       path: Routes.login,
       builder: (context, state) {
@@ -29,16 +70,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           authRepository: context.read<AuthRepository>(),
         );
         return LoginScreen(viewModel: viewModel);
-      },
-    ),
-    GoRoute(
-      path: Routes.home,
-      builder: (context, state) {
-        return HomeScreen(
-          viewModel: HomeViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
-        );
       },
     ),
     GoRoute(

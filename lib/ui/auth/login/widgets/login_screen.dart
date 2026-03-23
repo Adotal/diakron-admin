@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen>
   final TextEditingController _password = TextEditingController(
     text: '123456789',
   );
-
+  bool _isPasswordObscured = true;
   late AnimationController _animationController;
   late Animation<double> _borderRadiusAnimation;
   bool _isAnimating = false;
@@ -125,7 +125,18 @@ class _LoginScreenState extends State<LoginScreen>
           InputText(
             controller: _password,
             hintText: AppLocalizations.of(context)!.password,
-            obscureText: true,
+            obscureText: _isPasswordObscured,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isPasswordObscured ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isPasswordObscured = !_isPasswordObscured;
+                });
+              },
+            ),
           ),
 
           const SizedBox(height: 10),
