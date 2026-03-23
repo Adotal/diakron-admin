@@ -6,6 +6,7 @@ import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,6 +23,9 @@ Future<void> main() async {
   await Supabase.initialize(
     url: dotenv.get('SUPABASE_URL'),
     anonKey: dotenv.get('SUPABASE_ANON_KEY'),
+  );
+  MapboxOptions.setAccessToken(
+    dotenv.get('MAPBOX_ACCESS_TOKEN'),
   );
 
   runApp(

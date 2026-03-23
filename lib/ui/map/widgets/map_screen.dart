@@ -3,7 +3,8 @@ import 'package:diakron_admin/ui/map/view_models/map_viewmodel.dart';
 import 'package:diakron_admin/ui/map/widgets/location_card.dart';
 import 'package:diakron_admin/ui/map/widgets/map_controls.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key, required this.viewModel});
@@ -14,6 +15,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  CircleAnnotationManager? _circleManager;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +23,9 @@ class _MapScreenState extends State<MapScreen> {
       body: ListenableBuilder(
         listenable: widget.viewModel,
         builder: (context, _) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _loadMarkers();
+          });
           return Column(
             children: [
               CustomMapHeader(
@@ -77,13 +82,17 @@ class _MapScreenState extends State<MapScreen> {
 
   // WIDGET: Map
   Widget _buildMapViewWidget() {
+    final accessToken = dotenv.get('MAPBOX_ACCESS_TOKEN');
+
+    MapboxOptions.setAccessToken(accessToken);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -91,15 +100,19 @@ class _MapScreenState extends State<MapScreen> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(25),
-        child: GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(20.671956, -103.348821),
+        child: MapWidget(
+          cameraOptions: CameraOptions(
+            center: Point(
+              coordinates: Position(-103.348821, 20.671956), // Guadalajara
+            ),
             zoom: 13,
           ),
-          markers: widget.viewModel.markers,
-          myLocationEnabled: true,
-          mapType: MapType.normal,
-          onTap: (_) {},
+          onMapCreated: (mapboxMap) async {
+
+            _circleManager = await mapboxMap.annotations.createCircleAnnotationManager();
+
+            _loadMarkers();
+          },
         ),
       ),
     );
@@ -119,10 +132,31 @@ class _MapScreenState extends State<MapScreen> {
             stats: data.stats,
             isConnected: data.isConnected,
             avatarUrl: data.avatarUrl,
-            onTap: () => widget.viewModel.selectLocation(context, data),
+            onTap: () => (),
           ),
         );
       },
     );
   }
+
+  Future<void> _loadMarkers() async {
+  if (_circleManager == null) return;
+
+  await _circleManager!.deleteAll();
+  final locations = widget.viewModel.filteredLocations;
+
+  for (var loc in locations) {
+    final point = Point(coordinates: Position(loc.lng, loc.lat));
+
+    await _circleManager!.create(
+      CircleAnnotationOptions(
+        geometry: point,
+        circleColor: loc.isConnected ? Colors.green.value : Colors.red.value,
+        circleRadius: 8.0,
+        circleStrokeWidth: 2.0,
+        circleStrokeColor: Colors.white.value,
+      ),
+    );
+  }
+}
 }

@@ -1,5 +1,6 @@
 // Routes manager
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
+import 'package:diakron_admin/data/repositories/map/map_repository_impl.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/forgot_password/view_models/forgot_password_viewmodel.dart';
 import 'package:diakron_admin/ui/auth/forgot_password/widgets/forgot_password_screen.dart';
@@ -48,7 +49,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           builder: (context, state){
             return MapScreen(
               viewModel: MapViewModel(
-                authRepository: context.read<AuthRepository>(),
+                repository: MapRepositoryImpl(),
               ),
             );
           },
