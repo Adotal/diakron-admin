@@ -48,6 +48,7 @@ class AuthService {
           'is_active': false,
           // Siempre es admin
           'user_type': 'admin',
+          'is_superadmin': false,
         },
       );
 
