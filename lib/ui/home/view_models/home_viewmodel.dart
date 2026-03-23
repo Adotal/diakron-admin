@@ -82,7 +82,6 @@ class HomeViewModel extends ChangeNotifier {
     _selectedCardIndex = index;
     notifyListeners();
   }
-
   void selectChartTab(int index) {
     _selectedChartTab = index;
     notifyListeners();
@@ -90,7 +89,6 @@ class HomeViewModel extends ChangeNotifier {
 
   // Helper para obtener los datos de la grafica actual segun la tarjeta seleccionada
   List<double> get currentChartPoints => stats[_selectedCardIndex].chartPoints;
-
   String get currentChartTitle =>
       stats[_selectedCardIndex].title.replaceAll('\n', ' ');
 
