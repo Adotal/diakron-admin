@@ -21,11 +21,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _email = TextEditingController(
-    text: 'adotal1484@gmail.com',
+    text: 'a22300871@ceti.mx',
   );
 
   final TextEditingController _password = TextEditingController(
-    text: '123456789',
+    text: '12345678',
   );
   bool _isPasswordObscured = true;
   late AnimationController _animationController;

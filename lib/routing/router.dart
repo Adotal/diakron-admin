@@ -12,6 +12,8 @@ import 'package:diakron_admin/ui/auth/sigunp/widgets/signup_screen.dart';
 import 'package:diakron_admin/ui/home/view_models/home_viewmodel.dart';
 import 'package:diakron_admin/ui/home/widgets/home_screen.dart';
 import 'package:diakron_admin/ui/main/widgets/main_screen.dart';
+import 'package:diakron_admin/ui/map/view_models/map_viewmodel.dart';
+import 'package:diakron_admin/ui/map/widgets/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +45,13 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 
         GoRoute(
           path: Routes.map,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Mapa"))),
+          builder: (context, state){
+            return MapScreen(
+              viewModel: MapViewModel(
+                authRepository: context.read<AuthRepository>(),
+              ),
+            );
+          },
         ),
 
         GoRoute(
