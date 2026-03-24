@@ -68,7 +68,7 @@ class MapControls extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.black : Colors.transparent,
+          color: isSelected ? Colors.black : Colors.white,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Text(

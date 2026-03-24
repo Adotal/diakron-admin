@@ -29,7 +29,7 @@ class LocationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: Colors.grey.shade200),
           ),

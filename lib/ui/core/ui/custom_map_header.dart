@@ -29,8 +29,8 @@ class CustomMapHeader extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(35),
-          bottomRight: Radius.circular(35),
+          bottomLeft: Radius.circular(0),
+          bottomRight: Radius.circular(0),
         ),
         boxShadow: [
           BoxShadow(

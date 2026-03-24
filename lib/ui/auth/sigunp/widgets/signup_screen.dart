@@ -2,6 +2,7 @@ import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
 import 'package:diakron_admin/ui/core/themes/app_strings.dart';
+import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
@@ -61,8 +62,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.greenDiakron1,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF387600), // El verde exacto
+        backgroundColor: AppColors.greenDiakron1, // El verde exacto
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -84,158 +86,165 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ],
         ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(
-              40,
-            ), // Crea el efecto de curva hacia adentro
-          ),
-        ),
       ),
 
-      body: ListView(
-        children: [
-          const SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Dimens.formPaddingHorizontal,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.createAccount,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                InputText(
-                  controller: _name,
-                  hintText: AppLocalizations.of(context)!.names,
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-
-                InputText(
-                  controller: _surnames,
-                  hintText: AppLocalizations.of(context)!.surnames,
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-
-                // Campo Email
-                InputText(
-                  controller: _email,
-                  hintText: AppLocalizations.of(context)!.email,
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-
-                InputText(
-                  controller: _phoneNumber,
-                  hintText: AppLocalizations.of(context)!.phoneNumber,
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-
-                // Campo Contraseña
-                InputText(
-                  controller: _password,
-                  hintText: AppLocalizations.of(context)!.password,
-                  obscureText: _isPasswordObscured,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordObscured
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordObscured = !_isPasswordObscured;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-                // Field confirm password
-                InputText(
-                  controller: _confirmPassword,
-                  hintText: AppLocalizations.of(context)!.confirmPassword,
-                  obscureText: _isPasswordObscured,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordObscured
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordObscured = !_isPasswordObscured;
-                      });
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 35),
-
-                // Button for signing up
-                FormButton(
-                  text: AppLocalizations.of(context)!.signUp,
-                  onPressed: () {
-                    widget.viewModel.signup.execute((
-                      _name.value.text,
-                      _surnames.value.text,
-                      _email.value.text,
-                      _phoneNumber.value.text,
-                      _password.value.text,
-                      _confirmPassword.value.text,
-                    ));
-                  },
-                  listenable: widget.viewModel.signup,
-                ),
-
-                const SizedBox(height: Dimens.longPaddingVertical),
-
-                GestureDetector(
-                  onTap: () {
-                    context.go(Routes.login);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.haveAnAccount,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.black54),
-                      ),
-                      SizedBox(width: 5),
-
-                      Text(
-                        AppLocalizations.of(context)!.loginExclamation,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: Dimens.paddingVertical),
-                Text(
-                  AppLocalizations.of(context)!.termsAndConditions,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                const SizedBox(height: Dimens.paddingVertical),
-              ],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(45.0),
+            topRight: Radius.circular(45.0,),
           ),
-        ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(45.0)),
+          child: ListView(
+            children: [
+              const SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Dimens.formPaddingHorizontal,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.createAccount,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    InputText(
+                      controller: _name,
+                      hintText: AppLocalizations.of(context)!.names,
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+
+                    InputText(
+                      controller: _surnames,
+                      hintText: AppLocalizations.of(context)!.surnames,
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+
+                    // Campo Email
+                    InputText(
+                      controller: _email,
+                      hintText: AppLocalizations.of(context)!.email,
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+
+                    InputText(
+                      controller: _phoneNumber,
+                      hintText: AppLocalizations.of(context)!.phoneNumber,
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+
+                    // Campo Contraseña
+                    InputText(
+                      controller: _password,
+                      hintText: AppLocalizations.of(context)!.password,
+                      obscureText: _isPasswordObscured,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordObscured
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordObscured = !_isPasswordObscured;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+                    // Field confirm password
+                    InputText(
+                      controller: _confirmPassword,
+                      hintText: AppLocalizations.of(context)!.confirmPassword,
+                      obscureText: _isPasswordObscured,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordObscured
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordObscured = !_isPasswordObscured;
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 35),
+
+                    // Button for signing up
+                    FormButton(
+                      text: AppLocalizations.of(context)!.signUp,
+                      onPressed: () {
+                        widget.viewModel.signup.execute((
+                          _name.value.text,
+                          _surnames.value.text,
+                          _email.value.text,
+                          _phoneNumber.value.text,
+                          _password.value.text,
+                          _confirmPassword.value.text,
+                        ));
+                      },
+                      listenable: widget.viewModel.signup,
+                    ),
+
+                    const SizedBox(height: Dimens.longPaddingVertical),
+
+                    GestureDetector(
+                      onTap: () {
+                        context.go(Routes.login);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.haveAnAccount,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                          SizedBox(width: 5),
+
+                          Text(
+                            AppLocalizations.of(context)!.loginExclamation,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: Dimens.paddingVertical),
+                    Text(
+                      AppLocalizations.of(context)!.termsAndConditions,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    const SizedBox(height: Dimens.paddingVertical),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -21,7 +21,7 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isDark ? AppColors.greenDiakron1 : Colors.green.shade300;
+    final bgColor = isDark ? AppColors.greenDiakron1 : AppColors.greenDiakron3;
     final textColor = isDark ? Colors.white : Colors.black87;
     final subtitleColor = isDark ? Colors.white70 : Colors.black87;
 
@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
                   ]
                 : [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: Colors.black.withOpacity(0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     )
@@ -83,7 +83,7 @@ class StatCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: LinearProgressIndicator(
                   value: percentage,
-                  backgroundColor: isDark ? Colors.white24 : Colors.grey.shade200,
+                  backgroundColor: isDark ? Colors.white24 : AppColors.backgroundDiakron,
                   color: progressColor,
                   minHeight: 6,
                 ),

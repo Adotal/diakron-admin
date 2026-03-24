@@ -63,6 +63,22 @@ class MapRepositoryImpl implements MapRepository {
         lng: -103.34761666332987,
         avatarUrl: 'https://pbs.twimg.com/profile_images/911823928259092480/XP3kMA6y_400x400.jpg',
       ),
+      LocationModel(
+        id: "ca4",
+        address: "Av. Alcalde 21B",
+        isConnected: true,
+        lat: 20.678046780557704,
+        lng: -103.34761666332987,
+        avatarUrl: 'https://pbs.twimg.com/profile_images/911823928259092480/XP3kMA6y_400x400.jpg',
+      ),
+      LocationModel(
+        id: "ca4",
+        address: "Av. Alcalde 21B",
+        isConnected: true,
+        lat: 20.678046780557704,
+        lng: -103.34761666332987,
+        avatarUrl: 'https://pbs.twimg.com/profile_images/911823928259092480/XP3kMA6y_400x400.jpg',
+      ),
 
     ];
   }

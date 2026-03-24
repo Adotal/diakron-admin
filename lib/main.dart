@@ -81,7 +81,7 @@ class MainApp extends StatelessWidget {
         primaryColor: AppColors.greenDiakron1,
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
-        fontFamily: 'Arial', // Fuente genérica
+        fontFamily: 'Arial',
       ),
 
       routerConfig: router(authRepository),

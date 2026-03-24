@@ -1,3 +1,4 @@
+import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/ui/custom_map_header.dart';
 import 'package:diakron_admin/ui/map/view_models/map_viewmodel.dart';
 import 'package:diakron_admin/ui/map/widgets/location_card.dart';
@@ -17,32 +18,39 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   CircleAnnotationManager? _circleManager;
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      body: ListenableBuilder(
-        listenable: widget.viewModel,
-        builder: (context, _) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _loadMarkers();
-          });
-          return Column(
-            children: [
-              CustomMapHeader(
-                title: widget.viewModel.showSegregadores
-                    ? "Segregadores"
-                    : "Centros de Acopio",
-                onSearch: (text) => widget.viewModel.updateSearchText(text),
-                userAvatar: const CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.white24,
-                  child: Icon(Icons.person, color: Colors.white),
-                ),
-              ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    // 1. El fondo de la pantalla ahora es verde
+    backgroundColor: AppColors.greenDiakron1, 
+    body: ListenableBuilder(
+      listenable: widget.viewModel,
+      builder: (context, _) {
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          _loadMarkers();
+        });
+        return Column(
+          children: [
+            CustomMapHeader(
+              title: widget.viewModel.showSegregadores ? "Segregadores" : "Centros de Acopio",
+              onSearch: (text) => widget.viewModel.updateSearchText(text),
+              userAvatar: const Icon(Icons.account_circle_outlined, color: Colors.white, size: 35),
+            ),
 
-              Expanded(
-                child: SafeArea(
-                  top: false,
+            // White card
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.backgroundDiakron,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: ClipRRect( // The map retains its rounded corners
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
                   child: Column(
                     children: [
                       Padding(
@@ -50,35 +58,32 @@ class _MapScreenState extends State<MapScreen> {
                         child: MapControls(
                           isMapSelected: widget.viewModel.isMapSelected,
                           showSegregadores: widget.viewModel.showSegregadores,
-                          onToggleViewMode: () =>
-                              widget.viewModel.toggleViewMode(),
-                          onToggleLocationType: () =>
-                              widget.viewModel.toggleLocationType(),
+                          onToggleViewMode: () => widget.viewModel.toggleViewMode(),
+                          onToggleLocationType: () => widget.viewModel.toggleLocationType(),
                         ),
                       ),
-
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
                           child: widget.viewModel.isLoading
                               ? const Center(child: CircularProgressIndicator())
                               : widget.viewModel.isMapSelected
-                              ? _buildMapViewWidget()
-                              : _buildLocationListView(),
+                                  ? _buildMapViewWidget()
+                                  : _buildLocationListView(),
                         ),
                       ),
-
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
 
   // WIDGET: Map
   Widget _buildMapViewWidget() {

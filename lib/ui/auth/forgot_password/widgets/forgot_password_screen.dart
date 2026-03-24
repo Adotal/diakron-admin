@@ -1,6 +1,7 @@
 import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/forgot_password/view_models/forgot_password_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/form_button.dart';
 import 'package:diakron_admin/ui/core/ui/input_text.dart';
@@ -10,20 +11,19 @@ import 'package:go_router/go_router.dart';
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key, required this.viewModel});
 
-  final ForgotPasswordViewmodel viewModel;  
+  final ForgotPasswordViewmodel viewModel;
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  
   final TextEditingController _email = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    widget.viewModel.sendRecoverEmail.addListener(_sendRecoverEmail);    
+    widget.viewModel.sendRecoverEmail.addListener(_sendRecoverEmail);
   }
 
   @override
@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF387600), // El verde de Diakron
+      backgroundColor: AppColors.greenDiakron1, // El verde de Diakron
       body: Column(
         children: [
           // SECCIÓN SUPERIOR (AppBar Personalizada)
@@ -86,9 +86,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(
-                    45.0,
-                  ), // Curva pronunciada de tu imagen
+                  topLeft: Radius.circular(45.0,),
+                  topRight: Radius.circular(45.0,),
                 ),
               ),
               child: ClipRRect(
@@ -98,10 +97,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(25.0),
                   children: [
-                    const Text(
+                    Text(
+                      AppLocalizations.of(context)!.forgotYourPassword,
                       textAlign: TextAlign.center,
-                      "¿Olvidaste tu\nContraseña?",
-                      style: TextStyle(fontSize: 38),
+                      style: const TextStyle(
+                        fontSize: Dimens.fontSubtitle,
+                        color: Colors.black,
+                      ),
                     ),
 
                     const SizedBox(height: 20),
@@ -141,7 +143,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _sendRecoverEmail() {
-
     if (widget.viewModel.sendRecoverEmail.completed) {
       widget.viewModel.sendRecoverEmail.clearResult();
 
