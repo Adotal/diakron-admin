@@ -43,22 +43,22 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 
         GoRoute(
           path: Routes.map,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Mapa"))),
+          builder: (_, _) => const Scaffold(body: Center(child: Text("Mapa"))),
         ),
 
         GoRoute(
           path: Routes.users,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Usuarios"))),
+          builder: (_, _) => const Scaffold(body: Center(child: Text("Usuarios"))),
         ),
 
         GoRoute(
           path: Routes.finance,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Finanzas"))),
+          builder: (_, _) => const Scaffold(body: Center(child: Text("Finanzas"))),
         ),
 
         GoRoute(
           path: Routes.settings,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Ajustes"))),
+          builder: (_, _) => const Scaffold(body: Center(child: Text("Ajustes"))),
         ),
       ],
     ),
