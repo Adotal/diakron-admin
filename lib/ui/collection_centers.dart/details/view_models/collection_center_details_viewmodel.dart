@@ -6,6 +6,8 @@ import 'package:diakron_admin/utils/command.dart';
 import 'package:diakron_admin/utils/result.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CollectionCenterDetailsViewModel extends ChangeNotifier {
   CollectionCenterDetailsViewModel({
@@ -103,6 +105,7 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  //-----------------------------SCHEDULE----------------------------
   final List<DaySchedule> weekSchedules = [
     DaySchedule(dayName: "Lunes"),
     DaySchedule(dayName: "Martes"),
@@ -174,8 +177,9 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
     if (day.openTime != null && day.closeTime != null) {
       final start = day.openTime!.hour * 60 + day.openTime!.minute;
       final end = day.closeTime!.hour * 60 + day.closeTime!.minute;
-      if (start >= end)
+      if (start >= end) {
         return "La hora de cierre debe ser posterior a la apertura";
+      }
     }
     return null;
   }
@@ -183,5 +187,33 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
   TimeOfDay? _parseTimeString(String timeStr) {
     final parts = timeStr.split(':');
     return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+
+  //-----------------------------SCHEDULE----------------------------
+
+  // Inside your Admin-facing Page or ViewModel
+  Future<Result<void>> viewDocument(String path) async {
+    try {
+      final result = await _ccenterRepository.getTemporaryUrl(path);
+      switch (result) {
+        case Ok<String?>():
+          if (result.value != null) {
+            String signedUrl = result.value!;
+            final Uri url = Uri.parse(signedUrl);
+            _logger.w('Opnening $url');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url, mode: LaunchMode.externalApplication);
+            } else {
+              throw 'Could not launch PDF viewer for $signedUrl';
+            }
+          }
+        case Error<String?>():
+          _logger.e('Error retreiving url');
+      }
+
+      return result;
+    } finally {
+      notifyListeners();
+    }
   }
 }

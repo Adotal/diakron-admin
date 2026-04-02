@@ -217,4 +217,20 @@ class DatabaseService {
       _logger.e(e);
     }
   }
+
+// For read private PDF docs
+Future<Result<String?>> getTemporaryUrl(String path) async {
+  try {
+    // Generate a URL that expires in 10 mins
+    final String signedUrl = await _supabase.storage
+        .from('diakron_storage_private')
+        .createSignedUrl(path, 600);
+
+    return Result.ok(signedUrl);
+  } on Exception catch (error) {
+    _logger.e("Error generating signed URL: $error on \n$path");
+    return Result.error(error);
+  }
+}
+
 }

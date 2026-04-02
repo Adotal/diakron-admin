@@ -76,11 +76,16 @@ class CollectionCenterRepository {
   }
 
   Future<Result<void>> updateCCenter(CollectionCenter editedCenter) async {
-    try{
-    return await _databaseService.updateFullUser(editedCenter);    
-    } on Exception catch(error){
+    try {
+      return await _databaseService.updateFullUser(editedCenter);
+    } on Exception catch (error) {
       _logger.e(error);
       return Result.error(error);
     }
+  }
+
+  // For read private PDF docs
+  Future<Result<String?>> getTemporaryUrl(String path) async {
+    return await _databaseService.getTemporaryUrl(path);
   }
 }
