@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:diakron_admin/domain/models/users/user_base/user_base.dart';
 import 'package:diakron_admin/utils/result.dart';
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -110,6 +111,47 @@ class DatabaseService {
       return Result.ok(result);
     } on Exception catch (error) {
       return Result.error(error);
+    }
+  }
+
+  Future<Result<void>> updateFullUser(UserBase user) async {
+    try {
+      final fullMap = user.toJson();
+      final String id = user.id!;
+
+      const userTableKeys = {
+        'id',
+        'user_name',
+        'surnames',
+        'phone_number',
+        'is_active',
+        'user_type',
+        'created_at',
+      };
+
+      // Map only for the 'users' table
+      final userData = Map<String, dynamic>.from(fullMap)
+        ..removeWhere((key, _) => !userTableKeys.contains(key));
+
+      // Map for the specific sub-table (e.g., collection_centers)
+      final specificData = Map<String, dynamic>.from(fullMap)
+        ..removeWhere((key, _) => userTableKeys.contains(key));
+
+        _logger.w('USER DATA: $userData\n SPECIFIC DATA: $specificData');
+
+      // Table name (pluralized version of user_type)
+      final tableName = "${user.userType}s";
+
+      // Run both in parallel for efficiency
+      final result =await Future.wait([
+        _supabase.from('users').update(userData).eq('id', id),
+        _supabase.from(tableName).update(specificData).eq('id', id),
+      ]);
+      _logger.w(result);
+      return Result.ok(null);
+    } on Exception catch (error) {
+      _logger.e(error);
+      return Result.error(Exception(error));
     }
   }
 

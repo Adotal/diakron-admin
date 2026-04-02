@@ -41,6 +41,7 @@ abstract class CollectionCenter with _$CollectionCenter implements UserBase {
 
   }) = _CollectionCenter;
 
+  // @override
   factory CollectionCenter.fromJson(Map<String, Object?> json) =>
       _$CollectionCenterFromJson(json);
 }

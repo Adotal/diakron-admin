@@ -6,13 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 
 class CollectionCenterDetailsViewModel extends ChangeNotifier {
-  
   CollectionCenterDetailsViewModel({
     required CollectionCenterRepository repository,
     required this.centerId,
   }) : _ccenterRepository = repository {
     load = Command0(_load)..execute();
     deleteCCenter = Command1(_deleteCCenter);
+    updateCCenter = Command0(_updateCCenter);
+  }
+
+  bool _isEditing = false;
+  bool get isEditing => _isEditing;
+
+  void toggleEdit() {
+    _isEditing = !_isEditing;
+    if (_isEditing) {
+      editedCenter = center;
+    }
+    notifyListeners();
   }
 
   final CollectionCenterRepository _ccenterRepository;
@@ -20,10 +31,27 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
 
   late Command0 load;
   late Command1<void, String> deleteCCenter;
-  late Command1 updateCCenter;
+  late Command0 updateCCenter;
   CollectionCenter? center;
+  CollectionCenter? editedCenter;
 
   final _logger = Logger();
+
+  Future<Result> _updateCCenter() async {
+    try {
+      final result = await _ccenterRepository.updateCCenter(editedCenter!);
+
+      switch (result) {
+        case Ok<void>():
+          _logger.i('Updated CCenter successfully');
+        case Error<void>():
+          _logger.e('ERROR UPDATING CCENTER');
+      }
+      return result;
+    } finally {
+      notifyListeners();
+    }
+  }
 
   Future<Result> _load() async {
     try {

@@ -10,7 +10,7 @@ class CollectionCentersViewmodel extends ChangeNotifier {
     required CollectionCenterRepository ccenterRepository,
   }) : _ccenterRepository = ccenterRepository {
     
-    load = Command0(_load)..execute();
+    load = Command0(_load);
     // updateCCenter  = Command1(_deleteBooking);
     // deleteCCenter = Command1(_deleteBooking);
   }

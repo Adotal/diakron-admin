@@ -21,12 +21,15 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
 
   @override
   void initState() {
+    widget.viewModel.load.execute();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant CollectionCentersScreen oldWidget) {
-    // TODO: implement didUpdateWidget
+    if(!widget.viewModel.load.completed){
+    widget.viewModel.load.execute();
+    }
     super.didUpdateWidget(oldWidget);
   }
   @override

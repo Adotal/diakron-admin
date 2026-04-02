@@ -1,4 +1,3 @@
-
 abstract class UserBase {
   String? get id;
   String? get userName;
@@ -7,4 +6,7 @@ abstract class UserBase {
   bool? get isActive;
   String? get userType;
   DateTime? get createdAt;
+
+  // Add this line!
+  Map<String, dynamic> toJson();
 }

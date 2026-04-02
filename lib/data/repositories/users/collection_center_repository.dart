@@ -35,7 +35,7 @@ class CollectionCenterRepository {
 
     switch (result) {
       case Ok<Map<String, dynamic>>():
-        final center = CollectionCenter.fromJson(result.value);        
+        final center = CollectionCenter.fromJson(result.value);
         return Result.ok(center);
       case Error<Map<String, dynamic>>():
         _logger.e('Error: ${result.error}');
@@ -72,6 +72,15 @@ class CollectionCenterRepository {
       }
     } on Exception catch (e) {
       return Result.error(e);
+    }
+  }
+
+  Future<Result<void>> updateCCenter(CollectionCenter editedCenter) async {
+    try{
+    return await _databaseService.updateFullUser(editedCenter);    
+    } on Exception catch(error){
+      _logger.e(error);
+      return Result.error(error);
     }
   }
 }

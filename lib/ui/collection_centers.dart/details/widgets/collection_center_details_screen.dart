@@ -24,6 +24,7 @@ class _CollectionCenterDetailsScreenState
   void initState() {
     super.initState();
     widget.viewModel.deleteCCenter.addListener(_onDelete);
+    widget.viewModel.updateCCenter.addListener(_onUpdate);
   }
 
   @override
@@ -31,19 +32,32 @@ class _CollectionCenterDetailsScreenState
     super.didUpdateWidget(oldWidget);
     oldWidget.viewModel.deleteCCenter.removeListener(_onDelete);
     widget.viewModel.deleteCCenter.addListener(_onDelete);
+
+    oldWidget.viewModel.updateCCenter.removeListener(_onUpdate);
+    widget.viewModel.updateCCenter.addListener(_onUpdate);
   }
 
   @override
   void dispose() {
     widget.viewModel.deleteCCenter.removeListener(_onDelete);
+    widget.viewModel.updateCCenter.removeListener(_onUpdate);
     // DISPOSE ALL CONTROLLERS
     _usernameController.dispose();
+    _surnamesController.dispose();
+    _phoneNumberController.dispose();
+    _curpRepController.dispose();
     _companyNameController.dispose();
     _rfcController.dispose();
+    _taxRegimeController.dispose();
+    _clabeController.dispose();
+    _bankController.dispose();
+    _commercialNameController.dispose();
+    _addressController.dispose();
+    _billingEmailController.dispose();
+    _taxpayerTypeController.dispose();
+    _postCodeController.dispose();
     super.dispose();
   }
-
-  bool _isEditing = false;
 
   // UserBase Text controllers
   final TextEditingController _usernameController = TextEditingController();
@@ -87,13 +101,15 @@ class _CollectionCenterDetailsScreenState
           // Edit Toggle
           IconButton(
             icon: Icon(
-              _isEditing ? Icons.cancel_outlined : Icons.edit_note,
-              color: _isEditing ? Colors.orange : Colors.blue,
+              widget.viewModel.isEditing
+                  ? Icons.cancel_outlined
+                  : Icons.edit_note,
+              color: widget.viewModel.isEditing ? Colors.orange : Colors.blue,
             ),
             onPressed: () {
               setState(() {
                 // Start editing -> Initialize controllers
-                if (!_isEditing) {
+                if (!widget.viewModel.isEditing) {
                   final center = widget.viewModel.center;
                   if (center != null) {
                     _usernameController.text = center.userName ?? '';
@@ -117,8 +133,8 @@ class _CollectionCenterDetailsScreenState
                     _validationStatus = center.validationStatus;
                     _isActive = center.isActive;
 
-                    _isEditing = !_isEditing;
-                  } 
+                    widget.viewModel.toggleEdit();
+                  }
                 } else {
                   _exitEditDialog();
                 }
@@ -323,21 +339,68 @@ class _CollectionCenterDetailsScreenState
                     ),
 
                     // Smooth Bottom Update Button
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      bottom: _isEditing ? 20 : -100,
-                      left: 20,
-                      right: 20,
-                      child: FloatingActionButton.extended(
-                        backgroundColor: Colors.green[600],
-                        onPressed: () => setState(() => _isEditing = false),
-                        label: const Text(
-                          "GUARDAR CAMBIOS",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        icon: const Icon(Icons.check, color: Colors.white),
-                      ),
+                    ListenableBuilder(
+                      listenable: widget.viewModel,
+                      builder: (context, _) {
+                        if (widget.viewModel.updateCCenter.running) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        return AnimatedPositioned(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          bottom: widget.viewModel.isEditing ? 20 : -100,
+                          left: 20,
+                          right: 20,
+                          child: FloatingActionButton.extended(
+                            backgroundColor: Colors.green[600],
+                            onPressed: () {
+                              // UPDATE EDITCCENTER
+                              widget.viewModel.editedCenter = widget
+                                  .viewModel
+                                  .editedCenter
+                                  ?.copyWith(
+                                    address: _addressController.text,
+                                    bank: _bankController.text,
+                                    billingEmail: _billingEmailController.text,
+                                    clabe: _clabeController.text,
+                                    commercialName:
+                                        _commercialNameController.text,
+                                    companyName: _companyNameController.text,
+                                    createdAt: DateTime.tryParse(
+                                      _createdAtController.text,
+                                    ),
+                                    curpRep: _curpRepController.text,
+                                    
+                                    isActive: _isActive,
+                                    phoneNumber: _phoneNumberController.text,
+                                    postCode: _postCodeController.text,
+                                    rfc: _rfcController.text,
+                                    schedule: _schedule,
+                                    surnames: _surnamesController.text,
+                                    taxRegime: _taxRegimeController.text,
+                                    taxpayerType: _taxpayerTypeController.text,
+                                    userName: _usernameController.text,
+                                    // id: '',
+                                    // pathIdRep: '',
+                                    // pathProofAddress: '',
+                                    // pathTaxCertificate: '',
+                                    // userType: '',
+                                    validationStatus: _validationStatus,
+
+                                  );
+
+                              // EXEC UPDATE
+                              widget.viewModel.updateCCenter.execute();
+                            },
+                            label: const Text(
+                              "GUARDAR CAMBIOS",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            icon: const Icon(Icons.check, color: Colors.white),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 );
@@ -374,13 +437,13 @@ class _CollectionCenterDetailsScreenState
       margin: const EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.symmetric(
         horizontal: 12,
-        vertical: _isEditing ? 4 : 12,
+        vertical: widget.viewModel.isEditing ? 4 : 12,
       ),
       decoration: BoxDecoration(
-        color: _isEditing ? Colors.white : Colors.transparent,
+        color: widget.viewModel.isEditing ? Colors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _isEditing ? Colors.green : Colors.transparent,
+          color: widget.viewModel.isEditing ? Colors.green : Colors.transparent,
         ),
       ),
       child: Row(
@@ -395,8 +458,9 @@ class _CollectionCenterDetailsScreenState
                   label,
                   style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                 ),
-                _isEditing && controller != null
+                widget.viewModel.isEditing && controller != null
                     ? TextField(
+                        enabled: widget.viewModel.isEditing,
                         controller: controller,
                         decoration: const InputDecoration(
                           isDense: true,
@@ -431,7 +495,7 @@ class _CollectionCenterDetailsScreenState
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: status.statusColor.withOpacity(0.1),
+            backgroundColor: status.statusColor.withValues(alpha: 0.1),
             child: Icon(status.statusIcon, color: status.statusColor),
           ),
           const SizedBox(width: 16),
@@ -453,29 +517,35 @@ class _CollectionCenterDetailsScreenState
     );
   }
 
-   void _exitEditDialog() {
+  void _exitEditDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Exit edit mode'),
-        content: const Text('Are you sure you want to exit edito mode?\nNo saved data will be lost'),
+        title: const Text('Salir del modo edición'),
+        content: const Text(
+          'Estás seguro de salir del modo edición, se perderán los cambios no guardados',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
-            onPressed: () async {
+            onPressed: () {
+              setState(() {
+                widget.viewModel.toggleEdit();
+              });
               Navigator.pop(context);
-              _isEditing = !_isEditing;
             },
-            child: const Text('Exit', style: TextStyle(color: AppColors.greenDiakron1)),
+            child: const Text(
+              'Salir',
+              style: TextStyle(color: AppColors.greenDiakron1),
+            ),
           ),
         ],
       ),
     );
   }
-
 
   void _showDeleteConfirm(String id) {
     showDialog(
@@ -498,6 +568,23 @@ class _CollectionCenterDetailsScreenState
         ],
       ),
     );
+  }
+
+  void _onUpdate() {
+    if (widget.viewModel.updateCCenter.completed) {
+      widget.viewModel.updateCCenter.clearResult();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Centro de recolección Actualizado")),
+      );
+    }
+
+    if (widget.viewModel.updateCCenter.error) {
+      widget.viewModel.updateCCenter.clearResult();
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("ERROR WHILE UPDATING CCENTER")));
+    }
   }
 
   void _onDelete() {
