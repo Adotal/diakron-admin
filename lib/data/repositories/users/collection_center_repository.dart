@@ -1,0 +1,77 @@
+import 'package:diakron_admin/data/services/database_service.dart';
+import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
+import 'package:diakron_admin/utils/result.dart';
+import 'package:logger/logger.dart';
+
+class CollectionCenterRepository {
+  CollectionCenterRepository({required DatabaseService databaseService})
+    : _databaseService = databaseService;
+
+  final DatabaseService _databaseService;
+
+  final _logger = Logger();
+
+  Future<Result<List<Map<String, dynamic>>>> fetchAllWasteTypes() async {
+    try {
+      final result = await _databaseService.fetchAllWasteTypes();
+
+      switch (result) {
+        case Ok<List<Map<String, dynamic>>>():
+          return Result.ok(result.value);
+
+        case Error<List<Map<String, dynamic>>>():
+          return Result.error(result.error);
+      }
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  Future<Result<CollectionCenter>> getCollectionCenterById(String id) async {
+    final result = await _databaseService.getUserById(
+      table: 'collection_centers',
+      id: id,
+    );
+
+    switch (result) {
+      case Ok<Map<String, dynamic>>():
+        final center = CollectionCenter.fromJson(result.value);        
+        return Result.ok(center);
+      case Error<Map<String, dynamic>>():
+        _logger.e('Error: ${result.error}');
+        return Result.error(result.error);
+    }
+  }
+
+  Future<Result<void>> deleteCCenter({required String id}) async {
+    try {
+      return await _databaseService.deleteUserById(id: id);
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
+  }
+
+  Future<Result<List<CollectionCenter>>> fetchCCenters() async {
+    try {
+      final result = await _databaseService.fetchTable(
+        table: 'collection_centers',
+      );
+      switch (result) {
+        case Ok<List<Map<String, dynamic>>>():
+          List<CollectionCenter> centers = (result.value as List)
+              .map(
+                (item) =>
+                    CollectionCenter.fromJson(item as Map<String, dynamic>),
+              )
+              .toList();
+
+          return Result.ok(centers);
+
+        case Error<List<Map<String, dynamic>>>():
+          return Result.error(result.error);
+      }
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
+  }
+}

@@ -10,4 +10,8 @@ abstract final class Routes {
   static const users = '/users';
   static const finance = '/finance';
   static const settings = '/settings';
+
+  // CRUD
+  static const collectionCenters = '/collection-centers';
+  static String collectionCenterById(String id) => '$collectionCenters/$id';
 }
