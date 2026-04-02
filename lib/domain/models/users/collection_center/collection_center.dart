@@ -1,5 +1,5 @@
 import 'package:diakron_admin/domain/models/users/user_base/user_base.dart';
-import 'package:diakron_admin/domain/models/validation_status/validation_status.dart';
+import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'collection_center.freezed.dart';

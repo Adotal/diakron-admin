@@ -1,7 +1,8 @@
 //   Widget build(BuildContext context) {
 //     return CustomScreen(
 //       // title: 'Detalles del Centro',
-import 'package:diakron_admin/domain/models/validation_status/validation_status.dart';
+import 'package:diakron_admin/domain/models/core/taxpayer_type/taxpayer_type.dart';
+import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
@@ -54,7 +55,6 @@ class _CollectionCenterDetailsScreenState
     _commercialNameController.dispose();
     _addressController.dispose();
     _billingEmailController.dispose();
-    _taxpayerTypeController.dispose();
     _postCodeController.dispose();
     super.dispose();
   }
@@ -63,30 +63,20 @@ class _CollectionCenterDetailsScreenState
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _surnamesController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  bool? _isActive;
   final TextEditingController _createdAtController = TextEditingController();
-  // Example controllers
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _rfcController = TextEditingController();
-
   final TextEditingController _taxRegimeController = TextEditingController();
-
   final TextEditingController _curpRepController = TextEditingController();
-
   final TextEditingController _bankController = TextEditingController();
-
   final TextEditingController _clabeController = TextEditingController();
-
   final TextEditingController _commercialNameController =
       TextEditingController();
-
   final TextEditingController _addressController = TextEditingController();
-
   final TextEditingController _billingEmailController = TextEditingController();
-
-  final TextEditingController _taxpayerTypeController = TextEditingController();
-
   final TextEditingController _postCodeController = TextEditingController();
+
+  bool? _isActive;
   Map<String, dynamic>? _schedule;
   String? _validationStatus;
 
@@ -112,6 +102,8 @@ class _CollectionCenterDetailsScreenState
                 if (!widget.viewModel.isEditing) {
                   final center = widget.viewModel.center;
                   if (center != null) {
+               
+
                     _usernameController.text = center.userName ?? '';
                     _surnamesController.text = center.surnames ?? '';
                     _phoneNumberController.text = center.phoneNumber ?? '';
@@ -126,7 +118,6 @@ class _CollectionCenterDetailsScreenState
                         center.commercialName ?? '';
                     _addressController.text = center.address ?? '';
                     _billingEmailController.text = center.billingEmail ?? '';
-                    _taxpayerTypeController.text = center.taxpayerType ?? '';
                     _postCodeController.text = center.postCode ?? '';
 
                     _schedule = center.schedule;
@@ -295,12 +286,39 @@ class _CollectionCenterDetailsScreenState
                           controller: _billingEmailController,
                         ),
 
-                        _buildDataRow(
-                          "Tipo de contribuyente",
-                          center.clabe ?? '',
-                          Icons.person_outline,
-
-                          controller: _taxpayerTypeController,
+                        Text("Tipo de contribuyente"),
+                        ListenableBuilder(
+                          listenable: widget.viewModel,
+                          builder: (context, _) {
+                            return IgnorePointer(
+                              ignoring: !widget.viewModel.isEditing,
+                              child: Opacity(
+                                opacity: widget.viewModel.isEditing ? 1.0 : 0.6,
+                                child: RadioGroup<TaxpayerType>(
+                                  groupValue: widget.viewModel.taxpayerType,
+                                  onChanged: (TaxpayerType? value) {
+                                    setState(() {
+                                      widget.viewModel.taxpayerType = value!;
+                                    });
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      RadioListTile<TaxpayerType>(
+                                        title: Text("Persona Moral"),
+                                        value: TaxpayerType.moral,
+                                        activeColor: AppColors.greenDiakron1,
+                                      ),
+                                      RadioListTile<TaxpayerType>(
+                                        title: Text("Persona Física"),
+                                        value: TaxpayerType.physical,
+                                        activeColor: AppColors.greenDiakron1,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
 
                         _buildDataRow(
@@ -310,6 +328,110 @@ class _CollectionCenterDetailsScreenState
 
                           controller: _postCodeController,
                         ),
+ListenableBuilder(
+            listenable: widget.viewModel,
+            builder: (context, _) {
+              return SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 0, label: Text('Lu')),
+                  ButtonSegment(value: 1, label: Text('Ma')),
+                  ButtonSegment(value: 2, label: Text('Mi')),
+                  ButtonSegment(value: 3, label: Text('Ju')),
+                  ButtonSegment(value: 4, label: Text('Vi')),
+                  ButtonSegment(value: 5, label: Text('Sá')),
+                  ButtonSegment(value: 6, label: Text('Do')),
+                ],
+                showSelectedIcon: false,
+                emptySelectionAllowed: true,
+                multiSelectionEnabled: true,
+                selected: widget.viewModel.daysOpen,
+                onSelectionChanged: (newSelection) => widget.viewModel.onDaysChanged(newSelection),
+              );
+            },
+          ),
+
+          const SizedBox(height: 20),
+
+          // Dynamic schedule list
+          ListenableBuilder(
+            listenable: widget.viewModel,
+            builder: (context, _) {
+              final selectedIndices = widget.viewModel.daysOpen.toList()..sort();
+
+              if (selectedIndices.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Text("No hay días seleccionados", style: TextStyle(color: Colors.grey)),
+                );
+              }
+
+              return Column(
+                children: selectedIndices.map((index) {
+                  final error = widget.viewModel.getErrorMessage(index);
+                  final day = widget.viewModel.weekSchedules[index];
+
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                            title: Text(
+                              day.dayName,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            trailing: (day.openTime != null && day.closeTime != null)
+                                ? IconButton(
+                                    icon: const Icon(Icons.copy_all, color: Colors.blue),
+                                    tooltip: "Copiar a toda la semana",
+                                    onPressed: null
+                                    // () => _confirmCopy(context, widget.viewModel, index),
+                                  )
+                                : null,
+                          ),
+                          const Divider(height: 1),
+                          TimePickerTile(
+                            label: "Hora de apertura",
+                            time: day.openTime,
+                            onTap: () async {
+                              final t = await showTimePicker(
+                                context: context,
+                                initialTime: day.openTime ?? TimeOfDay.now(),
+                              );
+                              if (t != null) widget.viewModel.updateTime(index, true, t);
+                            },
+                          ),
+                          TimePickerTile(
+                            label: "Hora de Cierre",
+                            time: day.closeTime,
+                            onTap: () async {
+                              final t = await showTimePicker(
+                                context: context,
+                                initialTime: day.closeTime ?? TimeOfDay.now(),
+                              );
+                              if (t != null) widget.viewModel.updateTime(index, false, t);
+                            },
+                          ),
+                          if (error != null)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              child: Text(
+                                error,
+                                style: const TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+          ),
 
                         _buildDataRow(
                           "Calendario",
@@ -371,7 +493,7 @@ class _CollectionCenterDetailsScreenState
                                       _createdAtController.text,
                                     ),
                                     curpRep: _curpRepController.text,
-                                    
+
                                     isActive: _isActive,
                                     phoneNumber: _phoneNumberController.text,
                                     postCode: _postCodeController.text,
@@ -379,7 +501,7 @@ class _CollectionCenterDetailsScreenState
                                     schedule: _schedule,
                                     surnames: _surnamesController.text,
                                     taxRegime: _taxRegimeController.text,
-                                    taxpayerType: _taxpayerTypeController.text,
+                                    taxpayerType: widget.viewModel.taxpayerType?.label,
                                     userName: _usernameController.text,
                                     // id: '',
                                     // pathIdRep: '',
@@ -387,7 +509,6 @@ class _CollectionCenterDetailsScreenState
                                     // pathTaxCertificate: '',
                                     // userType: '',
                                     validationStatus: _validationStatus,
-
                                   );
 
                               // EXEC UPDATE
@@ -603,5 +724,24 @@ class _CollectionCenterDetailsScreenState
         context,
       ).showSnackBar(SnackBar(content: Text("ERROR WHILE DELETING CCENTER")));
     }
+  }
+}
+class TimePickerTile extends StatelessWidget {
+  final String label;
+  final TimeOfDay? time;
+  final VoidCallback onTap;
+
+  const TimePickerTile({super.key, required this.label, this.time, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(label),
+      trailing: Text(
+        time?.format(context) ?? "Seleccionar",
+        style: TextStyle(color: time == null ? Colors.grey : Colors.blue),
+      ),
+      onTap: onTap,
+    );
   }
 }

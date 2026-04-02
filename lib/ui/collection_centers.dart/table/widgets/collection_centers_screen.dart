@@ -1,4 +1,4 @@
-import 'package:diakron_admin/domain/models/validation_status/validation_status.dart';
+import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/collection_centers.dart/table/view_models/collection_centers_viewmodel.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
@@ -34,7 +34,6 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
   
@@ -98,7 +97,7 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
                           SearchBar(
                             hintText: 'Buscar...',
                             leading: const Icon(Icons.search),
-                            onChanged: (value) => print(value), // Handle input
+                            // onChanged: (value) => print(value), // Handle input
                           ),
 
                           SizedBox(height: Dimens.paddingVertical),
