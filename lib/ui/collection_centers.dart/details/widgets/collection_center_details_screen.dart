@@ -1,31 +1,9 @@
-// import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
-// import 'package:diakron_admin/ui/core/ui/custom_screen.dart';
-// import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
-// import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
-
-// class CollectionCenterDetailsScreen extends StatefulWidget {
-//   const CollectionCenterDetailsScreen({super.key, required this.viewModel});
-
-//   @override
-//   State<CollectionCenterDetailsScreen> createState() =>
-//       _CollectionCenterDetailsScreenState();
-// }
-
-// class _CollectionCenterDetailsScreenState
-//     extends State<CollectionCenterDetailsScreen> {
-
-//   @override
 //   Widget build(BuildContext context) {
 //     return CustomScreen(
 //       // title: 'Detalles del Centro',
-//       child: SafeArea(
-//         child:
-//       ),
-//     );
-//   }
-// }
+import 'package:diakron_admin/domain/models/validation_status/validation_status.dart';
 import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
+import 'package:diakron_admin/ui/core/themes/colors.dart';
 import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -58,19 +36,45 @@ class _CollectionCenterDetailsScreenState
   @override
   void dispose() {
     widget.viewModel.deleteCCenter.removeListener(_onDelete);
-    widget.viewModel.deleteCCenter.addListener(_onDelete);
+    // DISPOSE ALL CONTROLLERS
+    _usernameController.dispose();
+    _companyNameController.dispose();
+    _rfcController.dispose();
     super.dispose();
   }
 
   bool _isEditing = false;
 
+  // UserBase Text controllers
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _surnamesController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  bool? _isActive;
+  final TextEditingController _createdAtController = TextEditingController();
   // Example controllers
-  final TextEditingController _companyController = TextEditingController(
-    text: "Global Logistics S.A.",
-  );
-  final TextEditingController _rfcController = TextEditingController(
-    text: "GML120304H32",
-  );
+  final TextEditingController _companyNameController = TextEditingController();
+  final TextEditingController _rfcController = TextEditingController();
+
+  final TextEditingController _taxRegimeController = TextEditingController();
+
+  final TextEditingController _curpRepController = TextEditingController();
+
+  final TextEditingController _bankController = TextEditingController();
+
+  final TextEditingController _clabeController = TextEditingController();
+
+  final TextEditingController _commercialNameController =
+      TextEditingController();
+
+  final TextEditingController _addressController = TextEditingController();
+
+  final TextEditingController _billingEmailController = TextEditingController();
+
+  final TextEditingController _taxpayerTypeController = TextEditingController();
+
+  final TextEditingController _postCodeController = TextEditingController();
+  Map<String, dynamic>? _schedule;
+  String? _validationStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +90,40 @@ class _CollectionCenterDetailsScreenState
               _isEditing ? Icons.cancel_outlined : Icons.edit_note,
               color: _isEditing ? Colors.orange : Colors.blue,
             ),
-            onPressed: () => setState(() => _isEditing = !_isEditing),
+            onPressed: () {
+              setState(() {
+                // Start editing -> Initialize controllers
+                if (!_isEditing) {
+                  final center = widget.viewModel.center;
+                  if (center != null) {
+                    _usernameController.text = center.userName ?? '';
+                    _surnamesController.text = center.surnames ?? '';
+                    _phoneNumberController.text = center.phoneNumber ?? '';
+                    _createdAtController.text = center.createdAt.toString();
+                    _taxRegimeController.text = center.taxRegime ?? '';
+                    _clabeController.text = center.clabe ?? '';
+                    _curpRepController.text = center.curpRep ?? '';
+                    _bankController.text = center.bank ?? '';
+                    _companyNameController.text = center.companyName ?? '';
+                    _rfcController.text = center.rfc ?? '';
+                    _commercialNameController.text =
+                        center.commercialName ?? '';
+                    _addressController.text = center.address ?? '';
+                    _billingEmailController.text = center.billingEmail ?? '';
+                    _taxpayerTypeController.text = center.taxpayerType ?? '';
+                    _postCodeController.text = center.postCode ?? '';
+
+                    _schedule = center.schedule;
+                    _validationStatus = center.validationStatus;
+                    _isActive = center.isActive;
+
+                    _isEditing = !_isEditing;
+                  } 
+                } else {
+                  _exitEditDialog();
+                }
+              });
+            },
           ),
           // Delete remains separate
           IconButton(
@@ -119,54 +156,6 @@ class _CollectionCenterDetailsScreenState
                   );
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () {
-                              // Navigate to your edit logic
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-
-                      Text('${widget.viewModel.center?.toJson()}'),
-                      const Divider(),
-                      const Text(
-                        'Tipos de Residuos Aceptados:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: ListenableBuilder(
-              listenable: widget.viewModel.load,
-              builder: (context, child) {
-                if (widget.viewModel.load.running) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (widget.viewModel.load.error) {
-                  return ErrorIndicator(
-                    title: "Problem charging Collection Center",
-                    label: "Try again",
-                    onPressed: widget.viewModel.load.execute,
-                  );
-                }
-
                 final center = widget.viewModel.center;
 
                 if (center == null) {
@@ -177,70 +166,182 @@ class _CollectionCenterDetailsScreenState
                   );
                 }
 
-                return child!;
-              },
-              child: Stack(
-                children: [
-                  ListView(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
-                    children: [
-                      _buildHeaderStatus(),
-                      const SizedBox(height: 24),
+                return Stack(
+                  children: [
+                    ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+                      children: [
+                        const Text(
+                          'Tipos de Residuos Aceptados:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
 
-                      _buildSection("Legal Representative"),
-                      _buildDataRow(
-                        "User",
-                        "adotal_admin",
-                        Icons.person_outline,
-                      ),
-                      _buildDataRow(
-                        "CURP",
-                        "CURP123456HDFRRR01",
-                        Icons.fingerprint,
-                      ),
+                        _buildHeaderStatus(
+                          status: center.validationStatus ?? 'UPLOADING',
+                        ),
+                        const SizedBox(height: 24),
 
-                      const SizedBox(height: 24),
+                        _buildSection("Representante legal"),
+                        _buildDataRow(
+                          "Nombre",
+                          center.userName ?? '',
+                          Icons.person_outline,
+                          controller: _usernameController,
+                        ),
+                        _buildDataRow(
+                          "Apellidos",
+                          center.surnames ?? '',
+                          Icons.person_outline,
 
-                      _buildSection("Tax & Bank Details"),
-                      _buildDataRow(
-                        "Company",
-                        "",
-                        Icons.business,
-                        controller: _companyController,
-                      ),
-                      _buildDataRow(
-                        "RFC",
-                        "",
-                        Icons.description_outlined,
-                        controller: _rfcController,
-                      ),
-                      _buildDataRow(
-                        "Bank",
-                        "BBVA México",
-                        Icons.account_balance_wallet_outlined,
-                      ),
-                    ],
-                  ),
+                          controller: _surnamesController,
+                        ),
+                        _buildDataRow(
+                          "Número telefónico",
+                          center.phoneNumber ?? '',
+                          Icons.person_outline,
 
-                  // Smooth Bottom Update Button
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    bottom: _isEditing ? 20 : -100,
-                    left: 20,
-                    right: 20,
-                    child: FloatingActionButton.extended(
-                      backgroundColor: Colors.green[600],
-                      onPressed: () => setState(() => _isEditing = false),
-                      label: const Text(
-                        "SAVE CHANGES",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      icon: const Icon(Icons.check, color: Colors.white),
+                          controller: _phoneNumberController,
+                        ),
+                        Text("ACTIVE: ${center.isActive}"),
+                        _buildDataRow(
+                          "Creado en",
+                          center.createdAt.toString(),
+                          Icons.person_outline,
+
+                          controller: _createdAtController,
+                        ),
+                        _buildDataRow(
+                          "CURP",
+                          center.curpRep ?? '',
+                          Icons.fingerprint,
+
+                          controller: _curpRepController,
+                        ),
+
+                        // COMPANY DATA
+                        const SizedBox(height: 24),
+
+                        _buildSection("Tax & Bank Details"),
+                        _buildDataRow(
+                          "Company Name",
+                          center.companyName ?? '',
+                          Icons.business,
+                          controller: _companyNameController,
+                        ),
+                        _buildDataRow(
+                          "RFC",
+                          center.rfc ?? '',
+                          Icons.description_outlined,
+                          controller: _rfcController,
+                        ),
+                        _buildDataRow(
+                          "Regimen fiscal",
+                          center.taxRegime ?? '',
+                          Icons.person_outline,
+
+                          controller: _taxRegimeController,
+                        ),
+                        _buildDataRow(
+                          "CLABE",
+                          center.clabe ?? '',
+                          Icons.person_outline,
+
+                          controller: _clabeController,
+                        ),
+                        _buildDataRow(
+                          "Bank",
+                          center.bank ?? '',
+                          Icons.account_balance_wallet_outlined,
+
+                          controller: _bankController,
+                        ),
+                        _buildDataRow(
+                          "Nombre comercial",
+                          center.commercialName ?? '',
+                          Icons.person_outline,
+
+                          controller: _commercialNameController,
+                        ),
+
+                        _buildDataRow(
+                          "Dirección",
+                          center.address ?? '',
+                          Icons.person_outline,
+
+                          controller: _addressController,
+                        ),
+
+                        _buildDataRow(
+                          "Correo electrónico de facturación",
+                          center.billingEmail ?? '',
+                          Icons.person_outline,
+
+                          controller: _billingEmailController,
+                        ),
+
+                        _buildDataRow(
+                          "Tipo de contribuyente",
+                          center.clabe ?? '',
+                          Icons.person_outline,
+
+                          controller: _taxpayerTypeController,
+                        ),
+
+                        _buildDataRow(
+                          "Código postal",
+                          center.postCode ?? '',
+                          Icons.person_outline,
+
+                          controller: _postCodeController,
+                        ),
+
+                        _buildDataRow(
+                          "Calendario",
+                          center.schedule.toString(),
+                          Icons.person_outline,
+                          // SCHEDULE
+                        ),
+
+                        _buildDataRow(
+                          "Identificación del representante",
+                          center.pathIdRep ?? '',
+                          Icons.person_outline,
+                        ),
+
+                        _buildDataRow(
+                          "Comprobante de domicilio",
+                          center.pathIdRep ?? '',
+                          Icons.person_outline,
+                        ),
+
+                        _buildDataRow(
+                          "Constancia de situación fiscal",
+                          center.pathTaxCertificate ?? '',
+                          Icons.person_outline,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+
+                    // Smooth Bottom Update Button
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      bottom: _isEditing ? 20 : -100,
+                      left: 20,
+                      right: 20,
+                      child: FloatingActionButton.extended(
+                        backgroundColor: Colors.green[600],
+                        onPressed: () => setState(() => _isEditing = false),
+                        label: const Text(
+                          "GUARDAR CAMBIOS",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.check, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -279,7 +380,7 @@ class _CollectionCenterDetailsScreenState
         color: _isEditing ? Colors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _isEditing ? Colors.blue.withOpacity(0.3) : Colors.transparent,
+          color: _isEditing ? Colors.green : Colors.transparent,
         ),
       ),
       child: Row(
@@ -304,7 +405,8 @@ class _CollectionCenterDetailsScreenState
                         ),
                       )
                     : Text(
-                        controller?.text ?? value,
+                        // Show simply the value
+                        value,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -318,32 +420,30 @@ class _CollectionCenterDetailsScreenState
     );
   }
 
-  Widget _buildHeaderStatus() {
+  Widget _buildHeaderStatus({required String? status}) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
-      child: const Row(
+      child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.orangeAccent,
-            child: Icon(Icons.hourglass_empty, color: Colors.white),
+            backgroundColor: status.statusColor.withOpacity(0.1),
+            child: Icon(status.statusIcon, color: status.statusColor),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Validation Status", style: TextStyle(fontSize: 12)),
+              const Text("Validación", style: TextStyle(fontSize: 12)),
               Text(
-                "PENDING REVIEW",
+                status.statusLabel, // Uses the extension
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.orange,
+                  color: status.statusColor, // Uses the extension
                 ),
               ),
             ],
@@ -352,6 +452,30 @@ class _CollectionCenterDetailsScreenState
       ),
     );
   }
+
+   void _exitEditDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Exit edit mode'),
+        content: const Text('Are you sure you want to exit edito mode?\nNo saved data will be lost'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              _isEditing = !_isEditing;
+            },
+            child: const Text('Exit', style: TextStyle(color: AppColors.greenDiakron1)),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void _showDeleteConfirm(String id) {
     showDialog(
@@ -366,8 +490,8 @@ class _CollectionCenterDetailsScreenState
           ),
           TextButton(
             onPressed: () async {
+              Navigator.pop(context);
               await widget.viewModel.deleteCCenter.execute(id);
-              context.pop();
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -379,9 +503,10 @@ class _CollectionCenterDetailsScreenState
   void _onDelete() {
     if (widget.viewModel.deleteCCenter.completed) {
       widget.viewModel.deleteCCenter.clearResult();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("SUCCESS DELETING CCENTER")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Centro de recolección eliminado")),
+      );
+      context.pop();
     }
 
     if (widget.viewModel.deleteCCenter.error) {

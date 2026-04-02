@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 
 class CollectionCenterDetailsViewModel extends ChangeNotifier {
-  final CollectionCenterRepository _ccenterRepository;
-  final String centerId;
-
+  
   CollectionCenterDetailsViewModel({
     required CollectionCenterRepository repository,
     required this.centerId,
@@ -17,8 +15,12 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
     deleteCCenter = Command1(_deleteCCenter);
   }
 
+  final CollectionCenterRepository _ccenterRepository;
+  final String centerId;
+
   late Command0 load;
   late Command1<void, String> deleteCCenter;
+  late Command1 updateCCenter;
   CollectionCenter? center;
 
   final _logger = Logger();

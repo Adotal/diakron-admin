@@ -18,10 +18,23 @@ class CollectionCentersScreen extends StatefulWidget {
 }
 
 class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
+
   @override
   void initState() {
     super.initState();
   }
+
+  @override
+  void didUpdateWidget(covariant CollectionCentersScreen oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+  
 
   @override
   Widget build(BuildContext context) {
