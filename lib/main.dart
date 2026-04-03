@@ -1,5 +1,7 @@
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
+import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/data/services/auth_service.dart';
+import 'package:diakron_admin/data/services/database_service.dart';
 import 'package:diakron_admin/l10n/app_localizations.dart';
 import 'package:diakron_admin/routing/router.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
@@ -33,6 +35,12 @@ Future<void> main() async {
       providers: [
         // Provider(create: (context) => AuthService()),
         Provider<AuthService>(create: (_) => AuthService()),
+        Provider<DatabaseService>(create: (_) => DatabaseService()),
+
+        Provider<CollectionCenterRepository>(create: (context) {
+          return CollectionCenterRepository(databaseService: context.read<DatabaseService>());
+        },),
+        
         // AuthRepository is a ChangeNotifier, so we MUST use ChangeNotifierProxyProvider
         ChangeNotifierProxyProvider<AuthService, AuthRepository>(
           create: (context) =>

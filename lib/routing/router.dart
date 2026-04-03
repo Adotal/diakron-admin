@@ -1,5 +1,6 @@
 // Routes manager
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
+import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/data/repositories/map/map_repository_impl.dart';
 import 'package:diakron_admin/routing/routes.dart';
 import 'package:diakron_admin/ui/auth/forgot_password/view_models/forgot_password_viewmodel.dart';
@@ -10,6 +11,10 @@ import 'package:diakron_admin/ui/auth/reset_password/view_models/reset_password_
 import 'package:diakron_admin/ui/auth/reset_password/widgets/reset_password_screen.dart';
 import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
 import 'package:diakron_admin/ui/auth/sigunp/widgets/signup_screen.dart';
+import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers.dart/details/widgets/collection_center_details_screen.dart';
+import 'package:diakron_admin/ui/collection_centers.dart/table/view_models/collection_centers_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers.dart/table/widgets/collection_centers_screen.dart';
 import 'package:diakron_admin/ui/home/view_models/home_viewmodel.dart';
 import 'package:diakron_admin/ui/home/widgets/home_screen.dart';
 import 'package:diakron_admin/ui/main/widgets/main_screen.dart';
@@ -20,19 +25,17 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: Routes.collectionCenters,
   debugLogDiagnostics: true, // TESTING
   refreshListenable: authRepository,
   redirect: _redirect,
 
   routes: [
-
     ShellRoute(
       builder: (context, state, child) {
         return MainScreen(child: child);
       },
       routes: [
-
         GoRoute(
           path: Routes.home,
           builder: (context, state) {
@@ -57,17 +60,20 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 
         GoRoute(
           path: Routes.users,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Usuarios"))),
+          builder: (_, _) =>
+              const Scaffold(body: Center(child: Text("Usuarios"))),
         ),
 
         GoRoute(
           path: Routes.finance,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Finanzas"))),
+          builder: (_, _) =>
+              const Scaffold(body: Center(child: Text("Finanzas"))),
         ),
 
         GoRoute(
           path: Routes.settings,
-          builder: (_, __) => const Scaffold(body: Center(child: Text("Ajustes"))),
+          builder: (_, _) =>
+              const Scaffold(body: Center(child: Text("Ajustes"))),
         ),
       ],
     ),
@@ -94,7 +100,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.resetpassword,
       builder: (context, state) {
         final viewModel = ResetPasswordViewmodel(
-          authRepository: context.read<AuthRepository>()
+          authRepository: context.read<AuthRepository>(),
         );
         return ResetPasswordScreen(viewModel: viewModel);
       },
@@ -108,13 +114,41 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
         return SignupScreen(viewModel: viewModel);
       },
     ),
+
+    GoRoute(
+      path: Routes.collectionCenters,
+      builder: (context, state) {
+        final viewModel = CollectionCentersViewmodel(
+          ccenterRepository: context.read<CollectionCenterRepository>(),
+        );
+        return CollectionCentersScreen(viewModel: viewModel);
+      },
+      // Details screen
+      routes: [
+        GoRoute(
+          path: ':id', // This matches the ${center.id} in your push
+          builder: (context, state) {
+            // Extract the ID from the URL path
+            final String idString = state.pathParameters['id']!;
+            final String centerId = idString;
+            final CollectionCenterDetailsViewModel viewModel =
+                CollectionCenterDetailsViewModel(
+                  repository: context.read<CollectionCenterRepository>(),
+                  centerId: centerId,
+                );
+
+            return CollectionCenterDetailsScreen(viewModel: viewModel);
+          },
+        ),
+      ],
+    ),
   ],
 );
 
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   final authRepo = context.read<AuthRepository>();
   final bool loggedIn = authRepo.isAuthenticated;
-  
+
   // Locations
   final bool isAtLogin = state.matchedLocation == Routes.login;
   final bool isAtReset = state.matchedLocation == Routes.resetpassword;
@@ -130,7 +164,7 @@ Future<String?> _redirect(BuildContext context, GoRouterState state) async {
   // 2. If not logged in, and not on an "Auth" page (login, signup, forgot), go to Login
   if (!loggedIn) {
     if (isAtLogin || isAtForgot || isAtSignup || isAtReset) {
-      return null; 
+      return null;
     }
     return Routes.login;
   }
@@ -142,31 +176,3 @@ Future<String?> _redirect(BuildContext context, GoRouterState state) async {
 
   return null;
 }
-
-// Future<String?> _redirect(BuildContext context, GoRouterState state) async {
-//   // if the user is not logged in, they need to login
-//   final bool loggedIn = context.read<AuthRepository>().isAuthenticated;
-//   final bool loggingIn = (state.matchedLocation == Routes.login);
-
-//   // Deep Link for Password Reset
-//   // Supabase sends the user to /callback by default;
-//   // check if the incoming path matches your reset route.
-//   final bool isResetting = (state.matchedLocation == Routes.resetpassword);
-
-//   if (context.read<AuthRepository>().isRecoveringPassword) {
-//     return Routes.resetpassword; // Push them to the reset screen
-//   }
-
-//   // If not logged in and its not already on login/reset page, force login
-//   // if (!loggedIn && loggingIn && !isResetting) {
-//   //   return Routes.login;
-//   // }
-
-//   // If logged in and trying to go to login page, send home
-//   // if (loggedIn && loggingIn && !isResetting) {
-//   //   return Routes.home;
-//   // }
-
-//   // No need to redirect at all
-//   return null;
-// }
