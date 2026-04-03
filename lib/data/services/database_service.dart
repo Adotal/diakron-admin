@@ -248,4 +248,14 @@ class DatabaseService {
       return Result.error(error);
     }
   }
+
+
+  Future<Result<void>> updateData({required String table, required Map<String, dynamic> map, required String id}) async {
+    try{
+      await _supabase.from(table).update(map).eq('id', id);
+      return Result.ok(null);
+    } on Exception catch(error){
+      return Result.error(error);
+    }
+  }
 }

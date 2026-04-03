@@ -1,6 +1,7 @@
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/domain/models/core/schedule/day_schedule.dart';
 import 'package:diakron_admin/domain/models/core/taxpayer_type/taxpayer_type.dart';
+import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
 import 'package:diakron_admin/utils/command.dart';
 import 'package:diakron_admin/utils/result.dart';
@@ -16,6 +17,7 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
     load = Command0(_load)..execute();
     deleteCCenter = Command1(_deleteCCenter);
     updateCCenter = Command0(_updateCCenter);
+    changeValidationStatus = Command1(_changeValidationStatus);
   }
 
   bool _isEditing = false;
@@ -37,10 +39,28 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
   late Command0 load;
   late Command1<void, String> deleteCCenter;
   late Command0 updateCCenter;
+  late Command1<void, String> changeValidationStatus;
   CollectionCenter? center;
   CollectionCenter? editedCenter;
 
   final _logger = Logger();
+
+  Future<Result<void>> _changeValidationStatus(String status) async {
+    try {
+
+      final result = await _ccenterRepository.changeValidationStatus(status, centerId);
+
+      switch (result) {
+        case Ok<void>():
+          _logger.i('Changed status to $status');
+        case Error<void>():
+          _logger.e('ERROR CHANGING STATUS ${result.error}');
+      }
+      return result;
+    } finally {
+      notifyListeners();
+    }
+  }
 
   Future<Result> _updateCCenter() async {
     try {

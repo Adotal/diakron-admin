@@ -1,4 +1,5 @@
 import 'package:diakron_admin/data/services/database_service.dart';
+import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
 import 'package:diakron_admin/utils/result.dart';
 import 'package:logger/logger.dart';
@@ -87,5 +88,14 @@ class CollectionCenterRepository {
   // For read private PDF docs
   Future<Result<String?>> getTemporaryUrl(String path) async {
     return await _databaseService.getTemporaryUrl(path);
+  }
+
+  Future<Result<void>> changeValidationStatus(String status, String id) async {
+    final result = await _databaseService.updateData(
+      table: 'collection_centers',
+      map: <String, dynamic>{"validation_status": status},
+      id: id
+    );
+  return result;
   }
 }
