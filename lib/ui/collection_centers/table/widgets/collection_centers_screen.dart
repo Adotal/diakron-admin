@@ -1,6 +1,6 @@
 import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/routing/routes.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/table/view_models/collection_centers_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers/table/view_models/collection_centers_viewmodel.dart';
 import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/custom_screen.dart';
 import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
@@ -93,17 +93,20 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
+                          SizedBox(height: Dimens.paddingVertical),
                           // Basic Material 3 SearchBar Example
                           SearchBar(
                             hintText: 'Buscar...',
                             leading: const Icon(Icons.search),
                             // onChanged: (value) => print(value), // Handle input
-                          ),
+                          ),                      
+                        ],
+                      ),
+                    ),
 
-                          SizedBox(height: Dimens.paddingVertical),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,                            
                             children: [
                               IconButton(
                                 onPressed: _showStatusInfo,
@@ -116,16 +119,12 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
                               SizedBox(width: 15),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
 
                     Expanded(                      
                       child: Padding(
                         padding: EdgeInsetsGeometry.all(20),                      
                         child: ListView.builder(
-                          padding: EdgeInsets.all(0),
-                          
+                          padding: EdgeInsets.all(0),                          
                           itemCount: widget.viewModel.collectionCenters.length,
                           itemBuilder: (context, index) {
                             final center =

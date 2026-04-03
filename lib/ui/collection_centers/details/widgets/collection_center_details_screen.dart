@@ -3,9 +3,10 @@
 //       // title: 'Detalles del Centro',
 import 'package:diakron_admin/domain/models/core/taxpayer_type/taxpayer_type.dart';
 import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/details/widgets/file_picker_tile.dart';
+import 'package:diakron_admin/ui/collection_centers/details/view_models/collection_center_details_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers/details/widgets/file_picker_tile.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
+import 'package:diakron_admin/ui/core/ui/custom_alert_dialog.dart';
 import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ class _CollectionCenterDetailsScreenState
     super.initState();
     widget.viewModel.deleteCCenter.addListener(_onDelete);
     widget.viewModel.updateCCenter.addListener(_onUpdate);
+    widget.viewModel.changeValidationStatus.addListener(_onChangedValidation);
   }
 
   @override
@@ -37,12 +39,16 @@ class _CollectionCenterDetailsScreenState
 
     oldWidget.viewModel.updateCCenter.removeListener(_onUpdate);
     widget.viewModel.updateCCenter.addListener(_onUpdate);
+
+    oldWidget.viewModel.changeValidationStatus.removeListener(_onChangedValidation);
+    widget.viewModel.changeValidationStatus.addListener(_onChangedValidation);
   }
 
   @override
   void dispose() {
     widget.viewModel.deleteCCenter.removeListener(_onDelete);
     widget.viewModel.updateCCenter.removeListener(_onUpdate);
+    widget.viewModel.changeValidationStatus.removeListener(_onChangedValidation);
     // DISPOSE ALL CONTROLLERS
     _usernameController.dispose();
     _surnamesController.dispose();
@@ -126,7 +132,22 @@ class _CollectionCenterDetailsScreenState
                     widget.viewModel.toggleEdit();
                   }
                 } else {
-                  _exitEditDialog();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CustomAlertDialog(
+                        title: 'Salir del modo edición',
+                        content:
+                            '¿Estás seguro de salir del modo edición?\nSe perderán los cambios no guardados',
+                        onPressed: () {
+                          setState(() {
+                            widget.viewModel.toggleEdit();
+                          });
+                        },
+                        actionText: 'Salir',
+                      );
+                    },
+                  );
                 }
               });
             },
@@ -640,10 +661,18 @@ class _CollectionCenterDetailsScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton(
-                                style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white),
-                                backgroundColor: WidgetStatePropertyAll(Colors.red), 
-                                foregroundColor: WidgetStatePropertyAll(Colors.white),),
-                                
+                                style: ButtonStyle(
+                                  iconColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    Colors.red,
+                                  ),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
+                                ),
+
                                 child: Row(
                                   children: [
                                     Icon(Icons.close),
@@ -652,15 +681,39 @@ class _CollectionCenterDetailsScreenState
                                   ],
                                 ),
                                 onPressed: () {
-                                  widget.viewModel.changeValidationStatus.execute(ValidationStatus.denied);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return CustomAlertDialog(
+                                        title: 'Rechazar centro',
+                                        content:
+                                            '¿Seguro que quieres rechazar este centro?',
+                                        actionText: 'Rechazar',
+                                        actionTextColor: Colors.red,
+                                        onPressed: () {
+                                          widget
+                                              .viewModel
+                                              .changeValidationStatus
+                                              .execute(ValidationStatus.denied);
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                               ),
 
                               ElevatedButton(
-
-                                style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white),
-                                backgroundColor: WidgetStatePropertyAll(Colors.green), 
-                                foregroundColor: WidgetStatePropertyAll(Colors.white),),
+                                style: ButtonStyle(
+                                  iconColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
+                                  backgroundColor: WidgetStatePropertyAll(
+                                    Colors.green,
+                                  ),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
+                                ),
                                 child: Row(
                                   children: [
                                     Icon(Icons.check),
@@ -669,7 +722,26 @@ class _CollectionCenterDetailsScreenState
                                   ],
                                 ),
                                 onPressed: () {
-                                  widget.viewModel.changeValidationStatus.execute(ValidationStatus.approved);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return CustomAlertDialog(
+                                        title: 'Validar centro',
+                                        content:
+                                            '¿Seguro que quieres validar este centro?',
+                                        actionText: 'Validar',
+                                        actionTextColor: Colors.green,
+                                        onPressed: () {
+                                          widget
+                                              .viewModel
+                                              .changeValidationStatus
+                                              .execute(
+                                                ValidationStatus.approved,
+                                              );
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -792,55 +864,17 @@ class _CollectionCenterDetailsScreenState
     );
   }
 
-  void _exitEditDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Salir del modo edición'),
-        content: const Text(
-          'Estás seguro de salir del modo edición, se perderán los cambios no guardados',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                widget.viewModel.toggleEdit();
-              });
-              Navigator.pop(context);
-            },
-            child: const Text(
-              'Salir',
-              style: TextStyle(color: AppColors.greenDiakron1),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showDeleteConfirm(String id) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this center?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await widget.viewModel.deleteCCenter.execute(id);
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
+      builder: (context) => CustomAlertDialog(
+        title: 'Confirmar eliminación',
+        content: '¿Estás seguro de querer borrar este centro?',
+        actionText: 'Eliminar',
+        onPressed: () async {
+          await widget.viewModel.deleteCCenter.execute(id);
+        },
+        actionTextColor: Colors.red,
       ),
     );
   }
@@ -877,6 +911,22 @@ class _CollectionCenterDetailsScreenState
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("ERROR WHILE DELETING CCENTER")));
+    }
+  }
+
+  void _onChangedValidation() {
+    if (widget.viewModel.changeValidationStatus.completed) {
+      widget.viewModel.changeValidationStatus.clearResult();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Cambiado estado de validación")),
+      );
+    }
+
+    if (widget.viewModel.changeValidationStatus.error) {
+      widget.viewModel.changeValidationStatus.clearResult();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("ERROR CAMBIANDO ESTADO DE VALIDACIÓN")));
     }
   }
 }

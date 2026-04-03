@@ -46,8 +46,10 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
 
   Future<Result<void>> _changeValidationStatus(String status) async {
     try {
-
-      final result = await _ccenterRepository.changeValidationStatus(status, centerId);
+      final result = await _ccenterRepository.changeValidationStatus(
+        status,
+        centerId,
+      );
 
       switch (result) {
         case Ok<void>():
@@ -55,6 +57,9 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
         case Error<void>():
           _logger.e('ERROR CHANGING STATUS ${result.error}');
       }
+
+      // Reload
+      load.execute();
       return result;
     } finally {
       notifyListeners();

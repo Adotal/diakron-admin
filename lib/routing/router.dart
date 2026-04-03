@@ -11,10 +11,10 @@ import 'package:diakron_admin/ui/auth/reset_password/view_models/reset_password_
 import 'package:diakron_admin/ui/auth/reset_password/widgets/reset_password_screen.dart';
 import 'package:diakron_admin/ui/auth/sigunp/view_models/signup_viewmodel.dart';
 import 'package:diakron_admin/ui/auth/sigunp/widgets/signup_screen.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/details/view_models/collection_center_details_viewmodel.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/details/widgets/collection_center_details_screen.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/table/view_models/collection_centers_viewmodel.dart';
-import 'package:diakron_admin/ui/collection_centers.dart/table/widgets/collection_centers_screen.dart';
+import 'package:diakron_admin/ui/collection_centers/details/view_models/collection_center_details_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers/details/widgets/collection_center_details_screen.dart';
+import 'package:diakron_admin/ui/collection_centers/table/view_models/collection_centers_viewmodel.dart';
+import 'package:diakron_admin/ui/collection_centers/table/widgets/collection_centers_screen.dart';
 import 'package:diakron_admin/ui/home/view_models/home_viewmodel.dart';
 import 'package:diakron_admin/ui/home/widgets/home_screen.dart';
 import 'package:diakron_admin/ui/main/widgets/main_screen.dart';
