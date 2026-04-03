@@ -137,13 +137,13 @@ class DatabaseService {
       final specificData = Map<String, dynamic>.from(fullMap)
         ..removeWhere((key, _) => userTableKeys.contains(key));
 
-        _logger.w('USER DATA: $userData\n SPECIFIC DATA: $specificData');
+      _logger.w('USER DATA: $userData\n SPECIFIC DATA: $specificData');
 
       // Table name (pluralized version of user_type)
       final tableName = "${user.userType}s";
 
       // Run both in parallel for efficiency
-      final result =await Future.wait([
+      final result = await Future.wait([
         _supabase.from('users').update(userData).eq('id', id),
         _supabase.from(tableName).update(specificData).eq('id', id),
       ]);
@@ -157,13 +157,29 @@ class DatabaseService {
 
   Future<Result<void>> deleteUserById({required String id}) async {
     try {
-      await _supabase.auth.admin.deleteUser(id);
+      await _supabase.rpc('delete_user_secure', params: {'target_user_id': id});
+      // If they deleted themselves, sign them out locally
+      if (id == _supabase.auth.currentUser?.id) {
+        await _supabase.auth.signOut();
+      }
+
+      _logger.i("User $id removed from the system.");
       return Result.ok(null);
     } on Exception catch (error) {
-      _logger.e(error);
-      return Result.error(Exception(error));
+      _logger.e('Error deleting user');
+      return Result.error(error);
     }
   }
+
+  // Future<Result<void>> deleteUserById({required String id}) async {
+  //   try {
+  //     await _supabase.auth.admin.deleteUser(id);
+  //     return Result.ok(null);
+  //   } on Exception catch (error) {
+  //     _logger.e(error);
+  //     return Result.error(Exception(error));
+  //   }
+  // }
 
   Future<Result<void>> deleteRecordById({
     required String table,
@@ -218,19 +234,18 @@ class DatabaseService {
     }
   }
 
-// For read private PDF docs
-Future<Result<String?>> getTemporaryUrl(String path) async {
-  try {
-    // Generate a URL that expires in 10 mins
-    final String signedUrl = await _supabase.storage
-        .from('diakron_storage_private')
-        .createSignedUrl(path, 600);
+  // For read private PDF docs
+  Future<Result<String?>> getTemporaryUrl(String path) async {
+    try {
+      // Generate a URL that expires in 10 mins
+      final String signedUrl = await _supabase.storage
+          .from('diakron_storage_private')
+          .createSignedUrl(path, 600);
 
-    return Result.ok(signedUrl);
-  } on Exception catch (error) {
-    _logger.e("Error generating signed URL: $error on \n$path");
-    return Result.error(error);
+      return Result.ok(signedUrl);
+    } on Exception catch (error) {
+      _logger.e("Error generating signed URL: $error on \n$path");
+      return Result.error(error);
+    }
   }
-}
-
 }

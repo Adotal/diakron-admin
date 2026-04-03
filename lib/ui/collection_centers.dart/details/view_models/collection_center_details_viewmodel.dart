@@ -6,7 +6,6 @@ import 'package:diakron_admin/utils/command.dart';
 import 'package:diakron_admin/utils/result.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CollectionCenterDetailsViewModel extends ChangeNotifier {

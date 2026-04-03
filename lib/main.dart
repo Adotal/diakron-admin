@@ -23,7 +23,7 @@ Future<void> main() async {
   // Initialize supabase
   await Supabase.initialize(
     url: dotenv.get('SUPABASE_URL'),
-    anonKey: dotenv.get('SUPABASE_SEVICE_ROLE_KEY'),
+    anonKey: dotenv.get('SUPABASE_ANON_KEY'),
   );
 
   runApp(
