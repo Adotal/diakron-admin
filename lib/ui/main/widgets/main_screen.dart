@@ -5,47 +5,38 @@ import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {
   final Widget child;
-
   const MainScreen({super.key, required this.child});
 
-  int _getIndex(String location) {
-    if (location == Routes.home) return 0;
-    if (location == Routes.map) return 1;
-    if (location == Routes.users) return 2;
-    if (location == Routes.finance) return 3;
-    if (location == Routes.settings) return 4;
-    return 0;
+  // Top level destinations
+  static const List<String> _destinations = [
+    Routes.home,
+    Routes.map,
+    Routes.users,
+    Routes.finance,
+    Routes.settings,
+  ];
+
+  int _calculateSelectedIndex(BuildContext context) {
+    final String location = GoRouterState.of(context).uri.path;
+    
+    // Find the index of the destination that matches the start of the current path
+    final index = _destinations.indexWhere((route) => location.startsWith(route));
+    
+    // If not foundor in root default to 0
+    return index == -1 ? 0 : index;
   }
 
-  void _onTap(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        context.go(Routes.home);
-        break;
-      case 1:
-        context.go(Routes.map);
-        break;
-      case 2:
-        context.go(Routes.users);
-        break;
-      case 3:
-        context.go(Routes.finance);
-        break;
-      case 4:
-        context.go(Routes.settings);
-        break;
-    }
+  void _onItemTapped(int index, BuildContext context) {
+    context.go(_destinations[index]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).uri.toString();
-
     return Scaffold(
       body: child,
       bottomNavigationBar: CustomBottomBar(
-        currentIndex: _getIndex(location),
-        onTap: (index) => _onTap(context, index),
+        currentIndex: _calculateSelectedIndex(context),
+        onTap: (index) => _onItemTapped(index, context),
       ),
     );
   }

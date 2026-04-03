@@ -20,12 +20,13 @@ import 'package:diakron_admin/ui/home/widgets/home_screen.dart';
 import 'package:diakron_admin/ui/main/widgets/main_screen.dart';
 import 'package:diakron_admin/ui/map/view_models/map_viewmodel.dart';
 import 'package:diakron_admin/ui/map/widgets/map_screen.dart';
+import 'package:diakron_admin/ui/users_menu/widgets/users_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.collectionCenters,
+  initialLocation: Routes.home,
   debugLogDiagnostics: true, // TESTING
   refreshListenable: authRepository,
   redirect: _redirect,
@@ -49,19 +50,78 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
 
         GoRoute(
           path: Routes.map,
-          builder: (context, state){
+          builder: (context, state) {
             return MapScreen(
-              viewModel: MapViewModel(
-                repository: MapRepositoryImpl(),
-              ),
+              viewModel: MapViewModel(repository: MapRepositoryImpl()),
             );
           },
         ),
 
         GoRoute(
           path: Routes.users,
-          builder: (_, _) =>
-              const Scaffold(body: Center(child: Text("Usuarios"))),
+          builder: (context, state) => const UsersMenuScreen(),
+          routes: [
+            GoRoute(
+              path: Routes.admins, // Full path: /users/admin
+              builder: (context, state) {
+                return const Scaffold(body: Center(child: Text("Admins")));
+              },
+              // builder: (context, state) => const AdminUserScreen(),
+            ),
+
+            GoRoute(
+              path: Routes.collectionCenters,
+              builder: (context, state) {
+                final viewModel = CollectionCentersViewmodel(
+                  ccenterRepository: context.read<CollectionCenterRepository>(),
+                );
+                return CollectionCentersScreen(viewModel: viewModel);
+              },
+              // Details screen
+              routes: [
+                GoRoute(
+                  path: ':id', // This matches the ${center.id} in your push
+                  builder: (context, state) {
+                    // Extract the ID from the URL path
+                    final String idString = state.pathParameters['id']!;
+                    final String centerId = idString;
+                    final CollectionCenterDetailsViewModel viewModel =
+                        CollectionCenterDetailsViewModel(
+                          repository: context
+                              .read<CollectionCenterRepository>(),
+                          centerId: centerId,
+                        );
+
+                    return CollectionCenterDetailsScreen(viewModel: viewModel);
+                  },
+                ),
+              ],
+            ),
+
+            GoRoute(
+              path: Routes.participants, // Full path: /users/customer
+              builder: (context, state) {
+                return const Scaffold(
+                  body: Center(child: Text("Participants")),
+                );
+              },
+              // builder: (context, state) => const CustomerUserScreen(),
+            ),
+            GoRoute(
+              path: Routes.stores, // Full path: /users/customer
+              builder: (context, state) {
+                return const Scaffold(body: Center(child: Text("Stores")));
+              },
+              // builder: (context, state) => const CustomerUserScreen(),
+            ),
+            GoRoute(
+              path: Routes.collectors, // Full path: /users/customer
+              builder: (context, state) {
+                return const Scaffold(body: Center(child: Text("Collectors")));
+              },
+              // builder: (context, state) => const CustomerUserScreen(),
+            ),
+          ],
         ),
 
         GoRoute(
@@ -113,34 +173,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
         );
         return SignupScreen(viewModel: viewModel);
       },
-    ),
-
-    GoRoute(
-      path: Routes.collectionCenters,
-      builder: (context, state) {
-        final viewModel = CollectionCentersViewmodel(
-          ccenterRepository: context.read<CollectionCenterRepository>(),
-        );
-        return CollectionCentersScreen(viewModel: viewModel);
-      },
-      // Details screen
-      routes: [
-        GoRoute(
-          path: ':id', // This matches the ${center.id} in your push
-          builder: (context, state) {
-            // Extract the ID from the URL path
-            final String idString = state.pathParameters['id']!;
-            final String centerId = idString;
-            final CollectionCenterDetailsViewModel viewModel =
-                CollectionCenterDetailsViewModel(
-                  repository: context.read<CollectionCenterRepository>(),
-                  centerId: centerId,
-                );
-
-            return CollectionCenterDetailsScreen(viewModel: viewModel);
-          },
-        ),
-      ],
     ),
   ],
 );
