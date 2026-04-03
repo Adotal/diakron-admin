@@ -1,7 +1,6 @@
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/domain/models/core/schedule/day_schedule.dart';
 import 'package:diakron_admin/domain/models/core/taxpayer_type/taxpayer_type.dart';
-import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
 import 'package:diakron_admin/utils/command.dart';
 import 'package:diakron_admin/utils/result.dart';

@@ -18,7 +18,6 @@ class CollectionCentersScreen extends StatefulWidget {
 }
 
 class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
-
   @override
   void initState() {
     widget.viewModel.load.execute();
@@ -27,16 +26,17 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
 
   @override
   void didUpdateWidget(covariant CollectionCentersScreen oldWidget) {
-    if(!widget.viewModel.load.completed){
-    widget.viewModel.load.execute();
+    if (!widget.viewModel.load.running) {
+      widget.viewModel.load.clearResult();
+      widget.viewModel.load.execute();
     }
     super.didUpdateWidget(oldWidget);
   }
+
   @override
   void dispose() {
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -113,29 +113,31 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
                                 ),
                               ),
 
-                              SizedBox(width: 15,),
+                              SizedBox(width: 15),
                             ],
                           ),
                         ],
                       ),
                     ),
 
-                    Expanded(
+                    Expanded(                      
                       child: Padding(
-                        padding: EdgeInsetsGeometry.all(20),
-
+                        padding: EdgeInsetsGeometry.all(20),                      
                         child: ListView.builder(
+                          padding: EdgeInsets.all(0),
+                          
                           itemCount: widget.viewModel.collectionCenters.length,
                           itemBuilder: (context, index) {
                             final center =
                                 widget.viewModel.collectionCenters[index];
-
+                      
                             return Card(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 0,
                                 vertical: 5,
                               ),
                               child: ListTile(
+                                
                                 leading: const CircleAvatar(
                                   child: Icon(Icons.business),
                                 ),
@@ -150,21 +152,21 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
                                         Icons.error,
                                         color: Colors.blueGrey,
                                       ),
-
+                      
                                     if (center.validationStatus ==
                                         ValidationStatus.pending)
                                       const Icon(
                                         Icons.error,
                                         color: Colors.amber,
                                       ),
-
+                      
                                     if (center.validationStatus ==
                                         ValidationStatus.denied)
                                       const Icon(
                                         Icons.cancel,
                                         color: Colors.red,
                                       ),
-
+                      
                                     if (center.validationStatus ==
                                         ValidationStatus.approved)
                                       const Icon(
@@ -201,10 +203,9 @@ class _CollectionCentersScreenState extends State<CollectionCentersScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Tipos de estado"),
-          content: Column(     
-            mainAxisSize: MainAxisSize.min,        
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-
               ListTile(
                 leading: Icon(Icons.error, color: Colors.amber),
                 title: Text('VALIDACIÓN PENDIENTE'),

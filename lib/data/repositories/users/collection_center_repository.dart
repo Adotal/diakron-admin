@@ -1,5 +1,4 @@
 import 'package:diakron_admin/data/services/database_service.dart';
-import 'package:diakron_admin/domain/models/core/validation_status/validation_status.dart';
 import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
 import 'package:diakron_admin/utils/result.dart';
 import 'package:logger/logger.dart';

@@ -26,7 +26,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: Routes.collectionCenters,
   debugLogDiagnostics: true, // TESTING
   refreshListenable: authRepository,
   redirect: _redirect,
@@ -62,7 +62,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           builder: (context, state) => const UsersMenuScreen(),
           routes: [
             GoRoute(
-              path: Routes.admins, // Full path: /users/admin
+              path: Routes.adminsRelative, // /users/admins
               builder: (context, state) {
                 return const Scaffold(body: Center(child: Text("Admins")));
               },
@@ -70,7 +70,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             ),
 
             GoRoute(
-              path: Routes.collectionCenters,
+              path: Routes.collectionCentersRelative,
               builder: (context, state) {
                 final viewModel = CollectionCentersViewmodel(
                   ccenterRepository: context.read<CollectionCenterRepository>(),
@@ -99,7 +99,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             ),
 
             GoRoute(
-              path: Routes.participants, // Full path: /users/customer
+              path: Routes.participantsRelative, // Full path: /users/customer
               builder: (context, state) {
                 return const Scaffold(
                   body: Center(child: Text("Participants")),
@@ -108,14 +108,14 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
               // builder: (context, state) => const CustomerUserScreen(),
             ),
             GoRoute(
-              path: Routes.stores, // Full path: /users/customer
+              path: Routes.storesRelative, // Full path: /users/customer
               builder: (context, state) {
                 return const Scaffold(body: Center(child: Text("Stores")));
               },
               // builder: (context, state) => const CustomerUserScreen(),
             ),
             GoRoute(
-              path: Routes.collectors, // Full path: /users/customer
+              path: Routes.collectorsRelative, // Full path: /users/customer
               builder: (context, state) {
                 return const Scaffold(body: Center(child: Text("Collectors")));
               },
