@@ -103,7 +103,7 @@ class DatabaseService {
   }) async {
     try {
       final result = await _supabase
-          .from('full_collection_centers')
+          .from(table)
           .select()
           .eq('id', id)
           .single();
@@ -200,11 +200,11 @@ class DatabaseService {
       final data = await _supabase
           .from('waste_types')
           .select('*')
-          .order('waste_type', ascending: true); // Keeps the list alphabetical
+          .order('id', ascending: true); // Keeps the list alphabetical
       return Result.ok(List<Map<String, dynamic>>.from(data));
-    } catch (e) {
-      _logger.e(e);
-      return Result.error(Exception(e));
+    } on Exception catch (error) {
+      _logger.e(error);
+      return Result.error(error);
     }
   }
 

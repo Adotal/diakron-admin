@@ -1,5 +1,5 @@
 import 'map_repository.dart';
-import '../../models/location_model.dart';
+import '../../../domain/models/location/location_model.dart';
 
 class MapRepositoryImpl implements MapRepository {
   @override

@@ -1,3 +1,4 @@
+import 'package:diakron_admin/data/repositories/global/waste_repository.dart';
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/domain/models/core/schedule/day_schedule.dart';
 import 'package:diakron_admin/domain/models/core/taxpayer_type/taxpayer_type.dart';
@@ -11,13 +12,18 @@ import 'package:url_launcher/url_launcher.dart';
 class CollectionCenterDetailsViewModel extends ChangeNotifier {
   CollectionCenterDetailsViewModel({
     required CollectionCenterRepository repository,
+    required WasteRepository wasteRepository,
     required this.centerId,
-  }) : _ccenterRepository = repository {
+  }) : _ccenterRepository = repository,
+  _wasteRepository = wasteRepository {
     load = Command0(_load)..execute();
     deleteCCenter = Command1(_deleteCCenter);
     updateCCenter = Command0(_updateCCenter);
     changeValidationStatus = Command1(_changeValidationStatus);
   }
+
+  final WasteRepository _wasteRepository;
+  WasteRepository get wasteRepository => _wasteRepository;
 
   bool _isEditing = false;
   bool get isEditing => _isEditing;
@@ -90,6 +96,7 @@ class CollectionCenterDetailsViewModel extends ChangeNotifier {
       switch (result) {
         case Ok<CollectionCenter>():
           center = result.value;
+          _logger.w(center!.wasteTypeIds.toString());
         case Error<CollectionCenter>():
           return result;
       }

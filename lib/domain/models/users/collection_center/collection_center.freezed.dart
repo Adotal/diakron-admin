@@ -18,7 +18,9 @@ mixin _$CollectionCenter {
 // UserBase fields
  String? get id; String? get userName; String? get surnames; String? get phoneNumber; bool? get isActive; String? get userType; DateTime? get createdAt;// Collection center fields
  String? get companyName; String? get rfc; String? get taxRegime; String? get curpRep; String? get bank; String? get clabe; String? get commercialName; String? get address; String? get billingEmail; String? get taxpayerType; String? get postCode; Map<String, dynamic>? get schedule;// Document Paths
- String? get pathIdRep; String? get pathProofAddress; String? get pathTaxCertificate; String? get validationStatus;
+ String? get pathIdRep; String? get pathProofAddress; String? get pathTaxCertificate;// Validation status
+ String? get validationStatus;// WasteTypes
+ List<int> get wasteTypeIds;
 /// Create a copy of CollectionCenter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,16 +33,16 @@ $CollectionCenterCopyWith<CollectionCenter> get copyWith => _$CollectionCenterCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionCenter&&(identical(other.id, id) || other.id == id)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.surnames, surnames) || other.surnames == surnames)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.rfc, rfc) || other.rfc == rfc)&&(identical(other.taxRegime, taxRegime) || other.taxRegime == taxRegime)&&(identical(other.curpRep, curpRep) || other.curpRep == curpRep)&&(identical(other.bank, bank) || other.bank == bank)&&(identical(other.clabe, clabe) || other.clabe == clabe)&&(identical(other.commercialName, commercialName) || other.commercialName == commercialName)&&(identical(other.address, address) || other.address == address)&&(identical(other.billingEmail, billingEmail) || other.billingEmail == billingEmail)&&(identical(other.taxpayerType, taxpayerType) || other.taxpayerType == taxpayerType)&&(identical(other.postCode, postCode) || other.postCode == postCode)&&const DeepCollectionEquality().equals(other.schedule, schedule)&&(identical(other.pathIdRep, pathIdRep) || other.pathIdRep == pathIdRep)&&(identical(other.pathProofAddress, pathProofAddress) || other.pathProofAddress == pathProofAddress)&&(identical(other.pathTaxCertificate, pathTaxCertificate) || other.pathTaxCertificate == pathTaxCertificate)&&(identical(other.validationStatus, validationStatus) || other.validationStatus == validationStatus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionCenter&&(identical(other.id, id) || other.id == id)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.surnames, surnames) || other.surnames == surnames)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.rfc, rfc) || other.rfc == rfc)&&(identical(other.taxRegime, taxRegime) || other.taxRegime == taxRegime)&&(identical(other.curpRep, curpRep) || other.curpRep == curpRep)&&(identical(other.bank, bank) || other.bank == bank)&&(identical(other.clabe, clabe) || other.clabe == clabe)&&(identical(other.commercialName, commercialName) || other.commercialName == commercialName)&&(identical(other.address, address) || other.address == address)&&(identical(other.billingEmail, billingEmail) || other.billingEmail == billingEmail)&&(identical(other.taxpayerType, taxpayerType) || other.taxpayerType == taxpayerType)&&(identical(other.postCode, postCode) || other.postCode == postCode)&&const DeepCollectionEquality().equals(other.schedule, schedule)&&(identical(other.pathIdRep, pathIdRep) || other.pathIdRep == pathIdRep)&&(identical(other.pathProofAddress, pathProofAddress) || other.pathProofAddress == pathProofAddress)&&(identical(other.pathTaxCertificate, pathTaxCertificate) || other.pathTaxCertificate == pathTaxCertificate)&&(identical(other.validationStatus, validationStatus) || other.validationStatus == validationStatus)&&const DeepCollectionEquality().equals(other.wasteTypeIds, wasteTypeIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,userName,surnames,phoneNumber,isActive,userType,createdAt,companyName,rfc,taxRegime,curpRep,bank,clabe,commercialName,address,billingEmail,taxpayerType,postCode,const DeepCollectionEquality().hash(schedule),pathIdRep,pathProofAddress,pathTaxCertificate,validationStatus]);
+int get hashCode => Object.hashAll([runtimeType,id,userName,surnames,phoneNumber,isActive,userType,createdAt,companyName,rfc,taxRegime,curpRep,bank,clabe,commercialName,address,billingEmail,taxpayerType,postCode,const DeepCollectionEquality().hash(schedule),pathIdRep,pathProofAddress,pathTaxCertificate,validationStatus,const DeepCollectionEquality().hash(wasteTypeIds)]);
 
 @override
 String toString() {
-  return 'CollectionCenter(id: $id, userName: $userName, surnames: $surnames, phoneNumber: $phoneNumber, isActive: $isActive, userType: $userType, createdAt: $createdAt, companyName: $companyName, rfc: $rfc, taxRegime: $taxRegime, curpRep: $curpRep, bank: $bank, clabe: $clabe, commercialName: $commercialName, address: $address, billingEmail: $billingEmail, taxpayerType: $taxpayerType, postCode: $postCode, schedule: $schedule, pathIdRep: $pathIdRep, pathProofAddress: $pathProofAddress, pathTaxCertificate: $pathTaxCertificate, validationStatus: $validationStatus)';
+  return 'CollectionCenter(id: $id, userName: $userName, surnames: $surnames, phoneNumber: $phoneNumber, isActive: $isActive, userType: $userType, createdAt: $createdAt, companyName: $companyName, rfc: $rfc, taxRegime: $taxRegime, curpRep: $curpRep, bank: $bank, clabe: $clabe, commercialName: $commercialName, address: $address, billingEmail: $billingEmail, taxpayerType: $taxpayerType, postCode: $postCode, schedule: $schedule, pathIdRep: $pathIdRep, pathProofAddress: $pathProofAddress, pathTaxCertificate: $pathTaxCertificate, validationStatus: $validationStatus, wasteTypeIds: $wasteTypeIds)';
 }
 
 
@@ -51,7 +53,7 @@ abstract mixin class $CollectionCenterCopyWith<$Res>  {
   factory $CollectionCenterCopyWith(CollectionCenter value, $Res Function(CollectionCenter) _then) = _$CollectionCenterCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? userName, String? surnames, String? phoneNumber, bool? isActive, String? userType, DateTime? createdAt, String? companyName, String? rfc, String? taxRegime, String? curpRep, String? bank, String? clabe, String? commercialName, String? address, String? billingEmail, String? taxpayerType, String? postCode, Map<String, dynamic>? schedule, String? pathIdRep, String? pathProofAddress, String? pathTaxCertificate, String? validationStatus
+ String? id, String? userName, String? surnames, String? phoneNumber, bool? isActive, String? userType, DateTime? createdAt, String? companyName, String? rfc, String? taxRegime, String? curpRep, String? bank, String? clabe, String? commercialName, String? address, String? billingEmail, String? taxpayerType, String? postCode, Map<String, dynamic>? schedule, String? pathIdRep, String? pathProofAddress, String? pathTaxCertificate, String? validationStatus, List<int> wasteTypeIds
 });
 
 
@@ -68,7 +70,7 @@ class _$CollectionCenterCopyWithImpl<$Res>
 
 /// Create a copy of CollectionCenter
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userName = freezed,Object? surnames = freezed,Object? phoneNumber = freezed,Object? isActive = freezed,Object? userType = freezed,Object? createdAt = freezed,Object? companyName = freezed,Object? rfc = freezed,Object? taxRegime = freezed,Object? curpRep = freezed,Object? bank = freezed,Object? clabe = freezed,Object? commercialName = freezed,Object? address = freezed,Object? billingEmail = freezed,Object? taxpayerType = freezed,Object? postCode = freezed,Object? schedule = freezed,Object? pathIdRep = freezed,Object? pathProofAddress = freezed,Object? pathTaxCertificate = freezed,Object? validationStatus = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userName = freezed,Object? surnames = freezed,Object? phoneNumber = freezed,Object? isActive = freezed,Object? userType = freezed,Object? createdAt = freezed,Object? companyName = freezed,Object? rfc = freezed,Object? taxRegime = freezed,Object? curpRep = freezed,Object? bank = freezed,Object? clabe = freezed,Object? commercialName = freezed,Object? address = freezed,Object? billingEmail = freezed,Object? taxpayerType = freezed,Object? postCode = freezed,Object? schedule = freezed,Object? pathIdRep = freezed,Object? pathProofAddress = freezed,Object? pathTaxCertificate = freezed,Object? validationStatus = freezed,Object? wasteTypeIds = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -93,7 +95,8 @@ as Map<String, dynamic>?,pathIdRep: freezed == pathIdRep ? _self.pathIdRep : pat
 as String?,pathProofAddress: freezed == pathProofAddress ? _self.pathProofAddress : pathProofAddress // ignore: cast_nullable_to_non_nullable
 as String?,pathTaxCertificate: freezed == pathTaxCertificate ? _self.pathTaxCertificate : pathTaxCertificate // ignore: cast_nullable_to_non_nullable
 as String?,validationStatus: freezed == validationStatus ? _self.validationStatus : validationStatus // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,wasteTypeIds: null == wasteTypeIds ? _self.wasteTypeIds : wasteTypeIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 
@@ -178,10 +181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus,  List<int> wasteTypeIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CollectionCenter() when $default != null:
-return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus);case _:
+return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus,_that.wasteTypeIds);case _:
   return orElse();
 
 }
@@ -199,10 +202,10 @@ return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus,  List<int> wasteTypeIds)  $default,) {final _that = this;
 switch (_that) {
 case _CollectionCenter():
-return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus);case _:
+return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus,_that.wasteTypeIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +222,10 @@ return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userName,  String? surnames,  String? phoneNumber,  bool? isActive,  String? userType,  DateTime? createdAt,  String? companyName,  String? rfc,  String? taxRegime,  String? curpRep,  String? bank,  String? clabe,  String? commercialName,  String? address,  String? billingEmail,  String? taxpayerType,  String? postCode,  Map<String, dynamic>? schedule,  String? pathIdRep,  String? pathProofAddress,  String? pathTaxCertificate,  String? validationStatus,  List<int> wasteTypeIds)?  $default,) {final _that = this;
 switch (_that) {
 case _CollectionCenter() when $default != null:
-return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus);case _:
+return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.isActive,_that.userType,_that.createdAt,_that.companyName,_that.rfc,_that.taxRegime,_that.curpRep,_that.bank,_that.clabe,_that.commercialName,_that.address,_that.billingEmail,_that.taxpayerType,_that.postCode,_that.schedule,_that.pathIdRep,_that.pathProofAddress,_that.pathTaxCertificate,_that.validationStatus,_that.wasteTypeIds);case _:
   return null;
 
 }
@@ -234,7 +237,7 @@ return $default(_that.id,_that.userName,_that.surnames,_that.phoneNumber,_that.i
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _CollectionCenter implements CollectionCenter {
-  const _CollectionCenter({required this.id, required this.userName, required this.surnames, required this.phoneNumber, required this.isActive, required this.userType, required this.createdAt, this.companyName, this.rfc, this.taxRegime, this.curpRep, this.bank, this.clabe, this.commercialName, this.address, this.billingEmail, this.taxpayerType, this.postCode, final  Map<String, dynamic>? schedule, this.pathIdRep, this.pathProofAddress, this.pathTaxCertificate, this.validationStatus = ValidationStatus.uploading}): _schedule = schedule;
+  const _CollectionCenter({required this.id, required this.userName, required this.surnames, required this.phoneNumber, required this.isActive, required this.userType, required this.createdAt, this.companyName, this.rfc, this.taxRegime, this.curpRep, this.bank, this.clabe, this.commercialName, this.address, this.billingEmail, this.taxpayerType, this.postCode, final  Map<String, dynamic>? schedule, this.pathIdRep, this.pathProofAddress, this.pathTaxCertificate, this.validationStatus = ValidationStatus.uploading, final  List<int> wasteTypeIds = const []}): _schedule = schedule,_wasteTypeIds = wasteTypeIds;
   factory _CollectionCenter.fromJson(Map<String, dynamic> json) => _$CollectionCenterFromJson(json);
 
 // UserBase fields
@@ -270,7 +273,17 @@ class _CollectionCenter implements CollectionCenter {
 @override final  String? pathIdRep;
 @override final  String? pathProofAddress;
 @override final  String? pathTaxCertificate;
+// Validation status
 @override@JsonKey() final  String? validationStatus;
+// WasteTypes
+ final  List<int> _wasteTypeIds;
+// WasteTypes
+@override@JsonKey() List<int> get wasteTypeIds {
+  if (_wasteTypeIds is EqualUnmodifiableListView) return _wasteTypeIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_wasteTypeIds);
+}
+
 
 /// Create a copy of CollectionCenter
 /// with the given fields replaced by the non-null parameter values.
@@ -285,16 +298,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectionCenter&&(identical(other.id, id) || other.id == id)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.surnames, surnames) || other.surnames == surnames)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.rfc, rfc) || other.rfc == rfc)&&(identical(other.taxRegime, taxRegime) || other.taxRegime == taxRegime)&&(identical(other.curpRep, curpRep) || other.curpRep == curpRep)&&(identical(other.bank, bank) || other.bank == bank)&&(identical(other.clabe, clabe) || other.clabe == clabe)&&(identical(other.commercialName, commercialName) || other.commercialName == commercialName)&&(identical(other.address, address) || other.address == address)&&(identical(other.billingEmail, billingEmail) || other.billingEmail == billingEmail)&&(identical(other.taxpayerType, taxpayerType) || other.taxpayerType == taxpayerType)&&(identical(other.postCode, postCode) || other.postCode == postCode)&&const DeepCollectionEquality().equals(other._schedule, _schedule)&&(identical(other.pathIdRep, pathIdRep) || other.pathIdRep == pathIdRep)&&(identical(other.pathProofAddress, pathProofAddress) || other.pathProofAddress == pathProofAddress)&&(identical(other.pathTaxCertificate, pathTaxCertificate) || other.pathTaxCertificate == pathTaxCertificate)&&(identical(other.validationStatus, validationStatus) || other.validationStatus == validationStatus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectionCenter&&(identical(other.id, id) || other.id == id)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.surnames, surnames) || other.surnames == surnames)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.rfc, rfc) || other.rfc == rfc)&&(identical(other.taxRegime, taxRegime) || other.taxRegime == taxRegime)&&(identical(other.curpRep, curpRep) || other.curpRep == curpRep)&&(identical(other.bank, bank) || other.bank == bank)&&(identical(other.clabe, clabe) || other.clabe == clabe)&&(identical(other.commercialName, commercialName) || other.commercialName == commercialName)&&(identical(other.address, address) || other.address == address)&&(identical(other.billingEmail, billingEmail) || other.billingEmail == billingEmail)&&(identical(other.taxpayerType, taxpayerType) || other.taxpayerType == taxpayerType)&&(identical(other.postCode, postCode) || other.postCode == postCode)&&const DeepCollectionEquality().equals(other._schedule, _schedule)&&(identical(other.pathIdRep, pathIdRep) || other.pathIdRep == pathIdRep)&&(identical(other.pathProofAddress, pathProofAddress) || other.pathProofAddress == pathProofAddress)&&(identical(other.pathTaxCertificate, pathTaxCertificate) || other.pathTaxCertificate == pathTaxCertificate)&&(identical(other.validationStatus, validationStatus) || other.validationStatus == validationStatus)&&const DeepCollectionEquality().equals(other._wasteTypeIds, _wasteTypeIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,userName,surnames,phoneNumber,isActive,userType,createdAt,companyName,rfc,taxRegime,curpRep,bank,clabe,commercialName,address,billingEmail,taxpayerType,postCode,const DeepCollectionEquality().hash(_schedule),pathIdRep,pathProofAddress,pathTaxCertificate,validationStatus]);
+int get hashCode => Object.hashAll([runtimeType,id,userName,surnames,phoneNumber,isActive,userType,createdAt,companyName,rfc,taxRegime,curpRep,bank,clabe,commercialName,address,billingEmail,taxpayerType,postCode,const DeepCollectionEquality().hash(_schedule),pathIdRep,pathProofAddress,pathTaxCertificate,validationStatus,const DeepCollectionEquality().hash(_wasteTypeIds)]);
 
 @override
 String toString() {
-  return 'CollectionCenter(id: $id, userName: $userName, surnames: $surnames, phoneNumber: $phoneNumber, isActive: $isActive, userType: $userType, createdAt: $createdAt, companyName: $companyName, rfc: $rfc, taxRegime: $taxRegime, curpRep: $curpRep, bank: $bank, clabe: $clabe, commercialName: $commercialName, address: $address, billingEmail: $billingEmail, taxpayerType: $taxpayerType, postCode: $postCode, schedule: $schedule, pathIdRep: $pathIdRep, pathProofAddress: $pathProofAddress, pathTaxCertificate: $pathTaxCertificate, validationStatus: $validationStatus)';
+  return 'CollectionCenter(id: $id, userName: $userName, surnames: $surnames, phoneNumber: $phoneNumber, isActive: $isActive, userType: $userType, createdAt: $createdAt, companyName: $companyName, rfc: $rfc, taxRegime: $taxRegime, curpRep: $curpRep, bank: $bank, clabe: $clabe, commercialName: $commercialName, address: $address, billingEmail: $billingEmail, taxpayerType: $taxpayerType, postCode: $postCode, schedule: $schedule, pathIdRep: $pathIdRep, pathProofAddress: $pathProofAddress, pathTaxCertificate: $pathTaxCertificate, validationStatus: $validationStatus, wasteTypeIds: $wasteTypeIds)';
 }
 
 
@@ -305,7 +318,7 @@ abstract mixin class _$CollectionCenterCopyWith<$Res> implements $CollectionCent
   factory _$CollectionCenterCopyWith(_CollectionCenter value, $Res Function(_CollectionCenter) _then) = __$CollectionCenterCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? userName, String? surnames, String? phoneNumber, bool? isActive, String? userType, DateTime? createdAt, String? companyName, String? rfc, String? taxRegime, String? curpRep, String? bank, String? clabe, String? commercialName, String? address, String? billingEmail, String? taxpayerType, String? postCode, Map<String, dynamic>? schedule, String? pathIdRep, String? pathProofAddress, String? pathTaxCertificate, String? validationStatus
+ String? id, String? userName, String? surnames, String? phoneNumber, bool? isActive, String? userType, DateTime? createdAt, String? companyName, String? rfc, String? taxRegime, String? curpRep, String? bank, String? clabe, String? commercialName, String? address, String? billingEmail, String? taxpayerType, String? postCode, Map<String, dynamic>? schedule, String? pathIdRep, String? pathProofAddress, String? pathTaxCertificate, String? validationStatus, List<int> wasteTypeIds
 });
 
 
@@ -322,7 +335,7 @@ class __$CollectionCenterCopyWithImpl<$Res>
 
 /// Create a copy of CollectionCenter
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userName = freezed,Object? surnames = freezed,Object? phoneNumber = freezed,Object? isActive = freezed,Object? userType = freezed,Object? createdAt = freezed,Object? companyName = freezed,Object? rfc = freezed,Object? taxRegime = freezed,Object? curpRep = freezed,Object? bank = freezed,Object? clabe = freezed,Object? commercialName = freezed,Object? address = freezed,Object? billingEmail = freezed,Object? taxpayerType = freezed,Object? postCode = freezed,Object? schedule = freezed,Object? pathIdRep = freezed,Object? pathProofAddress = freezed,Object? pathTaxCertificate = freezed,Object? validationStatus = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userName = freezed,Object? surnames = freezed,Object? phoneNumber = freezed,Object? isActive = freezed,Object? userType = freezed,Object? createdAt = freezed,Object? companyName = freezed,Object? rfc = freezed,Object? taxRegime = freezed,Object? curpRep = freezed,Object? bank = freezed,Object? clabe = freezed,Object? commercialName = freezed,Object? address = freezed,Object? billingEmail = freezed,Object? taxpayerType = freezed,Object? postCode = freezed,Object? schedule = freezed,Object? pathIdRep = freezed,Object? pathProofAddress = freezed,Object? pathTaxCertificate = freezed,Object? validationStatus = freezed,Object? wasteTypeIds = null,}) {
   return _then(_CollectionCenter(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -347,7 +360,8 @@ as Map<String, dynamic>?,pathIdRep: freezed == pathIdRep ? _self.pathIdRep : pat
 as String?,pathProofAddress: freezed == pathProofAddress ? _self.pathProofAddress : pathProofAddress // ignore: cast_nullable_to_non_nullable
 as String?,pathTaxCertificate: freezed == pathTaxCertificate ? _self.pathTaxCertificate : pathTaxCertificate // ignore: cast_nullable_to_non_nullable
 as String?,validationStatus: freezed == validationStatus ? _self.validationStatus : validationStatus // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,wasteTypeIds: null == wasteTypeIds ? _self._wasteTypeIds : wasteTypeIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 

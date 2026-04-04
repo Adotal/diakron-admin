@@ -28,8 +28,9 @@ class CollectionCenterRepository {
   }
 
   Future<Result<CollectionCenter>> getCollectionCenterById(String id) async {
+    // Retrieves from a VIEW
     final result = await _databaseService.getUserById(
-      table: 'collection_centers',
+      table: 'full_collection_centers',
       id: id,
     );
 

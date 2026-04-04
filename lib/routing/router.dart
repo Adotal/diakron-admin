@@ -1,5 +1,6 @@
 // Routes manager
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
+import 'package:diakron_admin/data/repositories/global/waste_repository.dart';
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/data/repositories/map/map_repository_impl.dart';
 import 'package:diakron_admin/routing/routes.dart';
@@ -26,7 +27,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.collectionCenters,
+  initialLocation: Routes.home,
   debugLogDiagnostics: true, // TESTING
   refreshListenable: authRepository,
   redirect: _redirect,
@@ -74,6 +75,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
               builder: (context, state) {
                 final viewModel = CollectionCentersViewmodel(
                   ccenterRepository: context.read<CollectionCenterRepository>(),
+                  wasteRepository: context.read<WasteRepository>()
                 );
                 return CollectionCentersScreen(viewModel: viewModel);
               },
@@ -89,6 +91,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
                         CollectionCenterDetailsViewModel(
                           repository: context
                               .read<CollectionCenterRepository>(),
+                              wasteRepository: context.read<WasteRepository>(),
                           centerId: centerId,
                         );
 

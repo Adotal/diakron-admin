@@ -1,3 +1,4 @@
+import 'package:diakron_admin/data/repositories/global/waste_repository.dart';
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/domain/models/users/collection_center/collection_center.dart';
 import 'package:diakron_admin/utils/command.dart';
@@ -8,17 +9,17 @@ import 'package:logger/logger.dart';
 class CollectionCentersViewmodel extends ChangeNotifier {
   CollectionCentersViewmodel({
     required CollectionCenterRepository ccenterRepository,
-  }) : _ccenterRepository = ccenterRepository {
-    
+    required WasteRepository wasteRepository,
+  }) : _ccenterRepository = ccenterRepository,
+       _wasteRepository = wasteRepository {
     load = Command0(_load);
     // updateCCenter  = Command1(_deleteBooking);
     // deleteCCenter = Command1(_deleteBooking);
   }
 
   final CollectionCenterRepository _ccenterRepository;
+  final WasteRepository _wasteRepository;
 
-  List<Map<String, dynamic>> _allWasteTypes = [];
-  List<Map<String, dynamic>> get allWasteTypes => _allWasteTypes;
   List<CollectionCenter> _collectionCenters = [];
   List<CollectionCenter> get collectionCenters => _collectionCenters;
 
@@ -27,20 +28,6 @@ class CollectionCentersViewmodel extends ChangeNotifier {
 
   Future<Result> _load() async {
     try {
-      // Fetch all waste types
-
-      final wasteTypesresult = await _ccenterRepository.fetchAllWasteTypes();
-      ();
-      switch (wasteTypesresult) {
-        case Ok<List<Map<String, dynamic>>>():
-          _allWasteTypes = wasteTypesresult.value;
-        case Error<List<Map<String, dynamic>>>():
-          _logger.w('Failed to load Waste types ${wasteTypesresult.error}');
-          return wasteTypesresult;
-      }
-
-      _logger.d('Waste types SUCCESS: $allWasteTypes');
-
       // Fetch all CollectionCenters
       final result = await _ccenterRepository.fetchCCenters();
       ();

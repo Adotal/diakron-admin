@@ -1,4 +1,5 @@
 import 'package:diakron_admin/data/repositories/auth/auth_repository.dart';
+import 'package:diakron_admin/data/repositories/global/waste_repository.dart';
 import 'package:diakron_admin/data/repositories/users/collection_center_repository.dart';
 import 'package:diakron_admin/data/services/auth_service.dart';
 import 'package:diakron_admin/data/services/database_service.dart';
@@ -30,13 +31,21 @@ Future<void> main() async {
     dotenv.get('MAPBOX_ACCESS_TOKEN'),
   );
 
+  // Manual Dependency Injection for Global Data
+  final dbService = DatabaseService();
+  final wasteRepo = WasteRepository(databaseService: dbService);
+  
+  // Await the specific data your app needs to function
+  await wasteRepo.init();
+
   runApp(
     MultiProvider(
       providers: [
-        // Provider(create: (context) => AuthService()),
-        Provider<AuthService>(create: (_) => AuthService()),
-        Provider<DatabaseService>(create: (_) => DatabaseService()),
+        // Database service already instanced
+        Provider<DatabaseService>.value(value: dbService,),
+        Provider<WasteRepository>.value(value: wasteRepo),
 
+        Provider<AuthService>(create: (_) => AuthService()),
         Provider<CollectionCenterRepository>(create: (context) {
           return CollectionCenterRepository(databaseService: context.read<DatabaseService>());
         },),

@@ -1,4 +1,4 @@
-import 'package:diakron_admin/data/models/location_model.dart';
+import 'package:diakron_admin/domain/models/location/location_model.dart';
 import 'package:diakron_admin/data/repositories/map/map_repository.dart';
 import 'package:diakron_admin/utils/command.dart';
 import 'package:diakron_admin/utils/result.dart';

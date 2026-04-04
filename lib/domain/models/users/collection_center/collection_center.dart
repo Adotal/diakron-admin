@@ -37,7 +37,11 @@ abstract class CollectionCenter with _$CollectionCenter implements UserBase {
     String? pathProofAddress,
     String? pathTaxCertificate,
 
+    // Validation status
     @Default(ValidationStatus.uploading) String? validationStatus,
+
+    // WasteTypes
+    @Default([]) List<int> wasteTypeIds,
 
   }) = _CollectionCenter;
 

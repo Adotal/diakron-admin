@@ -6,6 +6,7 @@ import 'package:diakron_admin/domain/models/core/validation_status/validation_st
 import 'package:diakron_admin/ui/collection_centers/details/view_models/collection_center_details_viewmodel.dart';
 import 'package:diakron_admin/ui/collection_centers/details/widgets/file_picker_tile.dart';
 import 'package:diakron_admin/ui/core/themes/colors.dart';
+import 'package:diakron_admin/ui/core/themes/dimens.dart';
 import 'package:diakron_admin/ui/core/ui/custom_alert_dialog.dart';
 import 'package:diakron_admin/ui/core/ui/error_indicator.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,9 @@ class _CollectionCenterDetailsScreenState
     oldWidget.viewModel.updateCCenter.removeListener(_onUpdate);
     widget.viewModel.updateCCenter.addListener(_onUpdate);
 
-    oldWidget.viewModel.changeValidationStatus.removeListener(_onChangedValidation);
+    oldWidget.viewModel.changeValidationStatus.removeListener(
+      _onChangedValidation,
+    );
     widget.viewModel.changeValidationStatus.addListener(_onChangedValidation);
   }
 
@@ -48,7 +51,9 @@ class _CollectionCenterDetailsScreenState
   void dispose() {
     widget.viewModel.deleteCCenter.removeListener(_onDelete);
     widget.viewModel.updateCCenter.removeListener(_onUpdate);
-    widget.viewModel.changeValidationStatus.removeListener(_onChangedValidation);
+    widget.viewModel.changeValidationStatus.removeListener(
+      _onChangedValidation,
+    );
     // DISPOSE ALL CONTROLLERS
     _usernameController.dispose();
     _surnamesController.dispose();
@@ -198,11 +203,6 @@ class _CollectionCenterDetailsScreenState
                     ListView(
                       padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
                       children: [
-                        const Text(
-                          'Tipos de Residuos Aceptados:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-
                         _buildHeaderStatus(
                           status: center.validationStatus ?? 'UPLOADING',
                         ),
@@ -229,7 +229,26 @@ class _CollectionCenterDetailsScreenState
 
                           controller: _phoneNumberController,
                         ),
-                        Text("ACTIVE: ${center.isActive}"),
+
+                        ListenableBuilder(
+                          listenable: widget.viewModel,
+                          builder: (context, _) {
+                            if (widget.viewModel.center!.isActive!) {
+                              return ListTile(
+                                title: Text('Activo'),
+                                leading: Icon(
+                                  Icons.circle,
+                                  color: Colors.green,
+                                ),
+                              );
+                            }
+                            return ListTile(
+                              title: Text('Inactivo'),
+                              leading: Icon(Icons.circle, color: Colors.red),
+                            );
+                          },
+                        ),
+
                         _buildDataRow(
                           "Creado en",
                           center.createdAt.toString(),
@@ -322,227 +341,268 @@ class _CollectionCenterDetailsScreenState
                               ignoring: !widget.viewModel.isEditing,
                               child: Opacity(
                                 opacity: widget.viewModel.isEditing ? 1.0 : 0.6,
-                                child: RadioGroup<TaxpayerType>(
-                                  groupValue: widget.viewModel.taxpayerType,
-                                  onChanged: (TaxpayerType? value) {
-                                    setState(() {
-                                      widget.viewModel.taxpayerType = value!;
-                                    });
-                                  },
-                                  child: Column(
-                                    children: [
-                                      const RadioListTile<TaxpayerType>(
-                                        title: Text("Persona Moral"),
-                                        value: TaxpayerType.moral,
-                                        activeColor: AppColors.greenDiakron1,
+                                child: Column(
+                                  children: [
+                                    RadioGroup<TaxpayerType>(
+                                      groupValue: widget.viewModel.taxpayerType,
+                                      onChanged: (TaxpayerType? value) {
+                                        setState(() {
+                                          widget.viewModel.taxpayerType =
+                                              value!;
+                                        });
+                                      },
+                                      child: Column(
+                                        children: [
+                                          const RadioListTile<TaxpayerType>(
+                                            title: Text("Persona Moral"),
+                                            value: TaxpayerType.moral,
+                                            activeColor:
+                                                AppColors.greenDiakron1,
+                                          ),
+                                          const RadioListTile<TaxpayerType>(
+                                            title: Text("Persona Física"),
+                                            value: TaxpayerType.physical,
+                                            activeColor:
+                                                AppColors.greenDiakron1,
+                                          ),
+                                        ],
                                       ),
-                                      const RadioListTile<TaxpayerType>(
-                                        title: Text("Persona Física"),
-                                        value: TaxpayerType.physical,
-                                        activeColor: AppColors.greenDiakron1,
+                                    ),
+                                    SizedBox(height: Dimens.paddingVertical),
+                                    const Text(
+                                      'Tipos de Residuos Aceptados:',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
                                       ),
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const ClampingScrollPhysics(),
 
-                                      const Text('Calendario'),
-                                      ListenableBuilder(
-                                        listenable: widget.viewModel,
-                                        builder: (context, _) {
-                                          return SegmentedButton<int>(
-                                            segments: const [
-                                              ButtonSegment(
-                                                value: 0,
-                                                label: Text('Lu'),
+                                      padding: EdgeInsets.all(10),
+                                      itemCount: widget
+                                          .viewModel
+                                          .wasteRepository
+                                          .wasteTypesGlobal
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        final type = widget
+                                            .viewModel
+                                            .wasteRepository
+                                            .wasteTypesGlobal[index];
+                                        return CheckboxListTile(
+                                          title: Text(type.wasteType!),
+                                          value: center.wasteTypeIds.contains(
+                                            type.id,
+                                          ),
+                                          onChanged: (bool? checked) {
+                                            // vm.onSelectedWasteType(checked, type);
+                                          },
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(height: Dimens.paddingVertical),
+                                    const Text(
+                                      'Calendario',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: Dimens.paddingVertical),
+                                    ListenableBuilder(
+                                      listenable: widget.viewModel,
+                                      builder: (context, _) {
+                                        return SegmentedButton<int>(
+                                          segments: const [
+                                            ButtonSegment(
+                                              value: 0,
+                                              label: Text('Lu'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 1,
+                                              label: Text('Ma'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 2,
+                                              label: Text('Mi'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 3,
+                                              label: Text('Ju'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 4,
+                                              label: Text('Vi'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 5,
+                                              label: Text('Sá'),
+                                            ),
+                                            ButtonSegment(
+                                              value: 6,
+                                              label: Text('Do'),
+                                            ),
+                                          ],
+                                          showSelectedIcon: false,
+                                          emptySelectionAllowed: true,
+                                          multiSelectionEnabled: true,
+                                          selected: widget.viewModel.daysOpen,
+                                          onSelectionChanged: (newSelection) =>
+                                              widget.viewModel.onDaysChanged(
+                                                newSelection,
                                               ),
-                                              ButtonSegment(
-                                                value: 1,
-                                                label: Text('Ma'),
+                                        );
+                                      },
+                                    ),
+
+                                    const SizedBox(height: 20),
+
+                                    // Dynamic schedule list
+                                    ListenableBuilder(
+                                      listenable: widget.viewModel,
+                                      builder: (context, _) {
+                                        final selectedIndices =
+                                            widget.viewModel.daysOpen.toList()
+                                              ..sort();
+
+                                        if (selectedIndices.isEmpty) {
+                                          return const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                            ),
+                                            child: Text(
+                                              "No hay días seleccionados",
+                                              style: TextStyle(
+                                                color: Colors.grey,
                                               ),
-                                              ButtonSegment(
-                                                value: 2,
-                                                label: Text('Mi'),
-                                              ),
-                                              ButtonSegment(
-                                                value: 3,
-                                                label: Text('Ju'),
-                                              ),
-                                              ButtonSegment(
-                                                value: 4,
-                                                label: Text('Vi'),
-                                              ),
-                                              ButtonSegment(
-                                                value: 5,
-                                                label: Text('Sá'),
-                                              ),
-                                              ButtonSegment(
-                                                value: 6,
-                                                label: Text('Do'),
-                                              ),
-                                            ],
-                                            showSelectedIcon: false,
-                                            emptySelectionAllowed: true,
-                                            multiSelectionEnabled: true,
-                                            selected: widget.viewModel.daysOpen,
-                                            onSelectionChanged:
-                                                (newSelection) => widget
-                                                    .viewModel
-                                                    .onDaysChanged(
-                                                      newSelection,
-                                                    ),
+                                            ),
                                           );
-                                        },
-                                      ),
+                                        }
 
-                                      const SizedBox(height: 20),
+                                        return Column(
+                                          children: selectedIndices.map((
+                                            index,
+                                          ) {
+                                            final error = widget.viewModel
+                                                .getErrorMessage(index);
+                                            final day = widget
+                                                .viewModel
+                                                .weekSchedules[index];
 
-                                      // Dynamic schedule list
-                                      ListenableBuilder(
-                                        listenable: widget.viewModel,
-                                        builder: (context, _) {
-                                          final selectedIndices =
-                                              widget.viewModel.daysOpen.toList()
-                                                ..sort();
-
-                                          if (selectedIndices.isEmpty) {
-                                            return const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 20,
+                                            return Card(
+                                              margin: const EdgeInsets.only(
+                                                bottom: 12,
                                               ),
-                                              child: Text(
-                                                "No hay días seleccionados",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
+                                              elevation: 2,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 12,
+                                                          ),
+                                                      title: Text(
+                                                        day.dayName,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      trailing:
+                                                          (day.openTime !=
+                                                                  null &&
+                                                              day.closeTime !=
+                                                                  null)
+                                                          ? IconButton(
+                                                              icon: const Icon(
+                                                                Icons.copy_all,
+                                                                color:
+                                                                    Colors.blue,
+                                                              ),
+                                                              tooltip:
+                                                                  "Copiar a toda la semana",
+                                                              onPressed: null,
+                                                              // () => _confirmCopy(context, widget.viewModel, index),
+                                                            )
+                                                          : null,
+                                                    ),
+                                                    const Divider(height: 1),
+                                                    TimePickerTile(
+                                                      label: "Hora de apertura",
+                                                      time: day.openTime,
+                                                      onTap: () async {
+                                                        final t =
+                                                            await showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  day.openTime ??
+                                                                  TimeOfDay.now(),
+                                                            );
+                                                        if (t != null) {
+                                                          widget.viewModel
+                                                              .updateTime(
+                                                                index,
+                                                                true,
+                                                                t,
+                                                              );
+                                                        }
+                                                      },
+                                                    ),
+                                                    TimePickerTile(
+                                                      label: "Hora de Cierre",
+                                                      time: day.closeTime,
+                                                      onTap: () async {
+                                                        final t =
+                                                            await showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  day.closeTime ??
+                                                                  TimeOfDay.now(),
+                                                            );
+                                                        if (t != null) {
+                                                          widget.viewModel
+                                                              .updateTime(
+                                                                index,
+                                                                false,
+                                                                t,
+                                                              );
+                                                        }
+                                                      },
+                                                    ),
+                                                    if (error != null)
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets.fromLTRB(
+                                                              16,
+                                                              0,
+                                                              16,
+                                                              8,
+                                                            ),
+                                                        child: Text(
+                                                          error,
+                                                          style:
+                                                              const TextStyle(
+                                                                color:
+                                                                    Colors.red,
+                                                                fontSize: 12,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                  ],
                                                 ),
                                               ),
                                             );
-                                          }
-
-                                          return Column(
-                                            children: selectedIndices.map((
-                                              index,
-                                            ) {
-                                              final error = widget.viewModel
-                                                  .getErrorMessage(index);
-                                              final day = widget
-                                                  .viewModel
-                                                  .weekSchedules[index];
-
-                                              return Card(
-                                                margin: const EdgeInsets.only(
-                                                  bottom: 12,
-                                                ),
-                                                elevation: 2,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                    8.0,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      ListTile(
-                                                        contentPadding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 12,
-                                                            ),
-                                                        title: Text(
-                                                          day.dayName,
-                                                          style:
-                                                              const TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                        ),
-                                                        trailing:
-                                                            (day.openTime !=
-                                                                    null &&
-                                                                day.closeTime !=
-                                                                    null)
-                                                            ? IconButton(
-                                                                icon: const Icon(
-                                                                  Icons
-                                                                      .copy_all,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                                tooltip:
-                                                                    "Copiar a toda la semana",
-                                                                onPressed: null,
-                                                                // () => _confirmCopy(context, widget.viewModel, index),
-                                                              )
-                                                            : null,
-                                                      ),
-                                                      const Divider(height: 1),
-                                                      TimePickerTile(
-                                                        label:
-                                                            "Hora de apertura",
-                                                        time: day.openTime,
-                                                        onTap: () async {
-                                                          final t = await showTimePicker(
-                                                            context: context,
-                                                            initialTime:
-                                                                day.openTime ??
-                                                                TimeOfDay.now(),
-                                                          );
-                                                          if (t != null) {
-                                                            widget.viewModel
-                                                                .updateTime(
-                                                                  index,
-                                                                  true,
-                                                                  t,
-                                                                );
-                                                          }
-                                                        },
-                                                      ),
-                                                      TimePickerTile(
-                                                        label: "Hora de Cierre",
-                                                        time: day.closeTime,
-                                                        onTap: () async {
-                                                          final t = await showTimePicker(
-                                                            context: context,
-                                                            initialTime:
-                                                                day.closeTime ??
-                                                                TimeOfDay.now(),
-                                                          );
-                                                          if (t != null) {
-                                                            widget.viewModel
-                                                                .updateTime(
-                                                                  index,
-                                                                  false,
-                                                                  t,
-                                                                );
-                                                          }
-                                                        },
-                                                      ),
-                                                      if (error != null)
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets.fromLTRB(
-                                                                16,
-                                                                0,
-                                                                16,
-                                                                8,
-                                                              ),
-                                                          child: Text(
-                                                            error,
-                                                            style:
-                                                                const TextStyle(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  fontSize: 12,
-                                                                ),
-                                                          ),
-                                                        ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                          }).toList(),
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
@@ -917,16 +977,16 @@ class _CollectionCenterDetailsScreenState
   void _onChangedValidation() {
     if (widget.viewModel.changeValidationStatus.completed) {
       widget.viewModel.changeValidationStatus.clearResult();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Cambiado estado de validación")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Cambiado estado de validación")));
     }
 
     if (widget.viewModel.changeValidationStatus.error) {
       widget.viewModel.changeValidationStatus.clearResult();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("ERROR CAMBIANDO ESTADO DE VALIDACIÓN")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("ERROR CAMBIANDO ESTADO DE VALIDACIÓN")),
+      );
     }
   }
 }

@@ -34,6 +34,11 @@ _CollectionCenter _$CollectionCenterFromJson(Map<String, dynamic> json) =>
       pathTaxCertificate: json['path_tax_certificate'] as String?,
       validationStatus:
           json['validation_status'] as String? ?? ValidationStatus.uploading,
+      wasteTypeIds:
+          (json['waste_type_ids'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$CollectionCenterToJson(_CollectionCenter instance) =>
@@ -61,4 +66,5 @@ Map<String, dynamic> _$CollectionCenterToJson(_CollectionCenter instance) =>
       'path_proof_address': instance.pathProofAddress,
       'path_tax_certificate': instance.pathTaxCertificate,
       'validation_status': instance.validationStatus,
+      'waste_type_ids': instance.wasteTypeIds,
     };
