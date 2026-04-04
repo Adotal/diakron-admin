@@ -30,7 +30,7 @@ class UsersMenuScreen extends StatelessWidget {
             leading: Icon(item['icon'] as IconData, color: Colors.blue),
             title: Text(item['title'] as String, style: const TextStyle(fontWeight: FontWeight.bold)),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.go('${Routes.users}${item['route']}'),
+            onTap: () => context.go(item['route']),
           );
         },
       ),

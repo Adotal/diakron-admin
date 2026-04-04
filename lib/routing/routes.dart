@@ -25,7 +25,7 @@ abstract final class Routes {
   static String participantById(String id) => '$participants/$id';
 
   static const collectors = '$users/$collectorsRelative';
-  static const collectorsRelative = '/collectors';
+  static const collectorsRelative = 'collectors';
   static String collectorById(String id) => '$collectors/$id';
 
   static const stores = '$users/$storesRelative';
